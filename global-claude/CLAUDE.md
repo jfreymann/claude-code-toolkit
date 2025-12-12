@@ -142,8 +142,10 @@ Use these specialists for domain-specific work:
 | PostgreSQL | postgres-expert | Schema design, query optimization, indexes |
 | Tailwind CSS | tailwind-expert | Styling, responsive design, theme config |
 | Bash/Shell | bash-expert | Shell scripts, CI/CD, automation |
-| Git | git-workflow-manager | Complex merges, rebases, workflow issues |
+| Git | git-workflow-manager | Complex merges, rebases, workflow issues, push workflows (triggered by "push code") |
 | Code Review | code-reviewer | Quality review, security check |
+
+**Note:** `git-workflow-manager` is automatically triggered when you say "push code". It ensures your work is never pushed to main/master - always creates a feature branch first.
 
 <!-- 
 Add more agents for your stack. Examples you might add:

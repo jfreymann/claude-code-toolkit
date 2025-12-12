@@ -238,8 +238,10 @@ Specialized agents for domain work. Claude asks before delegating.
 | `postgres-expert` | PostgreSQL | Schema design, queries, optimization |
 | `tailwind-expert` | Tailwind CSS | Layouts, design systems, animations |
 | `bash-expert` | Shell | Complex scripts, automation |
-| `git-workflow-manager` | Git | Rebases, conflicts, branch prep |
+| `git-workflow-manager` | Git | Rebases, conflicts, branch prep, push workflows |
 | `code-reviewer` | Review | Quality, security, pre-merge |
+
+**Special**: `git-workflow-manager` is triggered when you say **"push code"**. It ensures your work is never pushed to main/master - always creates a feature branch first.
 
 ### The "Big Dog" Pattern
 
