@@ -147,3 +147,85 @@ Output:
 /archive-session                    # Interactive archive
 /archive-session --name "mtls"      # Specify archive name suffix
 ```
+
+---
+
+## Integration
+
+### In the Session Lifecycle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  FEATURE WORK                                                │
+│                                                              │
+│  /bootstrap → work → /whats-next                            │
+│       ↑                   │                                  │
+│       └───────────────────┘                                  │
+│           (repeat across sessions)                           │
+└─────────────────────────────────────────────────────────────┘
+                    │
+                    │ Feature complete
+                    ▼
+┌─────────────────────────────────────────────────────────────┐
+│  /archive-session                                            │
+│                                                              │
+│  • Moves CURRENT.md to archive/                             │
+│  • Creates fresh CURRENT.md                                  │
+│  • Clears ACTIVE.md plan link                               │
+│  • Ready for new work                                        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### When to Archive
+
+| Indicator | Archive? |
+|-----------|----------|
+| All plan tasks complete | ✓ Yes |
+| Feature branch merged | ✓ Yes |
+| User says "done" / "finished" | ✓ Yes |
+| Starting completely new work | ✓ Yes |
+| CURRENT.md getting very long | ✓ Yes |
+| Just pausing for a few days | ✗ No, use `/whats-next` |
+| Switching to different task in same project | ✗ No |
+
+### With /whats-next
+
+`/whats-next --complete` suggests archiving when appropriate:
+
+```
+/whats-next --complete
+    │
+    ├─ All tasks done? → "Ready to archive?"
+    │                         │
+    │                         ▼
+    │                   /archive-session
+    │
+    └─ More tasks? → Normal handoff
+```
+
+### With git-workflow-manager
+
+Typical completion flow:
+
+```
+1. /whats-next --complete     → Marks feature done
+2. git-workflow-manager       → Prepare branch, push, create PR
+3. (PR merged)
+4. /archive-session           → Archive and fresh start
+```
+
+### Finding Archived Sessions
+
+Archived sessions live in `docs/sessions/archive/`:
+
+```bash
+ls docs/sessions/archive/
+# 2025-01-10-143022-mtls-implementation.md
+# 2025-01-05-091545-initial-setup.md
+# 2024-12-20-163210-api-redesign.md
+```
+
+Useful for:
+- Reviewing past decisions
+- Understanding how features were built
+- Onboarding (seeing project history)

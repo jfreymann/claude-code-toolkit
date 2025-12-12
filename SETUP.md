@@ -11,19 +11,41 @@ A complete framework for agentic development with Claude Code. This toolkit give
 ### 1. Install the Toolkit
 
 ```bash
-# Clone or download this repo
+# Clone to your home directory (recommended location)
+cd ~
 git clone https://github.com/YOUR_USERNAME/claude-code-toolkit.git
-cd claude-code-toolkit
 
-# Run the installer (backs up existing ~/.claude automatically)
+# Run the installer
+cd claude-code-toolkit
 ./install.sh
+```
+
+**What the installer does:**
+- Creates `~/.claude/` directory
+- Copies `CLAUDE.md` template (your personal copy to customize)
+- Creates symlinks for `agents/`, `commands/`, `skills/` pointing to the repo
+
+**Result:**
+```
+~/.claude/
+├── CLAUDE.md     ← Your copy (customize this!)
+├── agents/       → ~/claude-code-toolkit/global-claude/agents/
+├── commands/     → ~/claude-code-toolkit/global-claude/commands/
+└── skills/       → ~/claude-code-toolkit/global-claude/skills/
 ```
 
 **Installer options:**
 ```bash
-./install.sh --help      # Show all options
-./install.sh --force     # Overwrite without backup
-./install.sh --no-backup # Fail if ~/.claude exists
+./install.sh --help       # Show all options
+./install.sh --dry-run    # Preview what would happen
+./install.sh --uninstall  # Remove symlinks
+```
+
+**Updating the toolkit:**
+```bash
+cd ~/claude-code-toolkit
+git pull
+# That's it! Symlinks pick up changes automatically.
 ```
 
 ### 2. Customize Your Identity

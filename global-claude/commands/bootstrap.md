@@ -1,11 +1,22 @@
 ---
 name: bootstrap
-description: Initialize session with full context stack, state recovery, and adaptive briefing. Run at session start or manually when switching projects.
+description: Initialize session with full context stack, state recovery, and adaptive briefing. Run at session start or when switching projects.
 ---
 
 # Bootstrap Session
 
-Initialize the development session with full context awareness. This command loads the context stack, recovers prior state, calculates staleness, and presents an adaptive brief.
+Initialize the development session with full context awareness. Loads the context stack, recovers prior state, calculates staleness, and presents an adaptive brief.
+
+## When to Use
+
+| Scenario | Command |
+|----------|---------|
+| Start of day | `/bootstrap` ✓ |
+| Switching projects | `/bootstrap` ✓ |
+| First time on project | `/bootstrap` ✓ |
+| Return from long break | `/bootstrap` ✓ |
+| Quick return (< few hours) | `/resume` (lighter) |
+| Mid-session state check | `/resume` (lighter) |
 
 ## File Locations
 
@@ -299,4 +310,61 @@ mv docs/sessions/CURRENT.md "docs/sessions/archive/$(date +%Y-%m-%d-%H%M%S)-{fea
 ```bash
 /bootstrap           # Standard session initialization
 /bootstrap --force   # Re-run even if already bootstrapped this session
+```
+
+---
+
+## Integration
+
+### Session Lifecycle
+
+```
+/bootstrap (start) → work → /whats-next (end)
+                  ↑                    │
+                  └────────────────────┘
+                     Next session
+```
+
+### With /resume
+
+`/bootstrap` is the full ceremony. `/resume` is the quick refresh:
+
+| Aspect | /bootstrap | /resume |
+|--------|------------|---------|
+| When | Day start, project switch | Quick returns |
+| Context load | Full stack | CURRENT.md only |
+| Staleness | Calculates and adapts | Skips |
+| Output | Adaptive by tier | Always compact |
+| State update | Adds session start entry | No update |
+
+### With /whats-next
+
+State saved by `/whats-next` is loaded by `/bootstrap`:
+
+```
+/whats-next saves:          /bootstrap loads:
+├─ Quick Reference    →     ├─ Quick Reference
+├─ What's Happening   →     ├─ What's Happening  
+├─ Next Actions       →     ├─ Next Actions
+├─ Key Decisions      →     ├─ Key Decisions (if WARM+)
+└─ Session History    →     └─ Session History (if COOL+)
+```
+
+### With Plans
+
+If `docs/plans/ACTIVE.md` exists:
+- Loads plan context into brief
+- Shows task progress
+- Syncs with CURRENT.md task reference
+
+### Typical Day Flow
+
+```
+Morning:   /bootstrap         → Full context load
+           work...
+Lunch:     /whats-next --pause → Quick state save
+           break
+Return:    /resume            → Quick refresh
+           work...
+End of day: /whats-next       → Full handoff
 ```

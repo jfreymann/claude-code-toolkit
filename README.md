@@ -1,52 +1,80 @@
 # Claude Code Agentic Workflow Toolkit
 
-> A complete framework for agentic development with Claude Code. Full context awareness, session persistence, and expert agents - ready in 5 minutes.
+> A complete framework for agentic development with Claude Code. Persistent state, seamless session continuity, and a structured workflow that always knows what's next.
 
-## Why This Toolkit?
+## The Philosophy
 
-**The problem**: Claude Code starts fresh every session. You lose context, repeat yourself, and spend time re-explaining your project.
+**Every session should pick up exactly where you left off.** No re-explaining. No lost context. No "where was I?"
 
-**The solution**: This toolkit gives Claude:
-- 🧠 **Memory of who you are** - Your preferences, working style, expertise level
-- 📍 **Awareness of where you left off** - Session state that persists across days/weeks
-- 🤖 **Expert agents** - Specialized personas for domain-specific work
-- 📋 **Workflow commands** - Streamlined session management
-
-**Result**: Run `/bootstrap` and Claude picks up exactly where you left off, with full context about you and your project.
+This toolkit provides:
+- **Persistent state** - Session context that survives across days, weeks, or months
+- **Clear workflow** - Always know what to do next
+- **Quality gates** - Consistent quality without ceremony overhead
+- **Expert agents** - Specialized help when you need it
 
 ---
 
-## Quick Start
+## The Workflow
 
-```bash
-# 1. Clone the toolkit
-git clone https://github.com/YOUR_USERNAME/claude-code-toolkit.git
-cd claude-code-toolkit
+This is the heart of the toolkit. A simple, repeatable flow for any project:
 
-# 2. Install global toolkit to ~/.claude
-./install.sh
-
-# 3. Customize your identity (edit the 🔧 sections)
-code ~/.claude/CLAUDE.md
-
-# 4. Set up a project
-cd /path/to/your-project
-/path/to/claude-code-toolkit/init-project.sh
-
-# 5. Start coding
-claude
-/bootstrap
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     THE PERFECT WORKFLOW                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  START SESSION                                                   │
+│  ─────────────                                                   │
+│  /bootstrap          Load full context, see what's next         │
+│       or                                                         │
+│  /resume             Quick "where was I?" (returning from break) │
+│                                                                  │
+│                              │                                   │
+│                              ▼                                   │
+│  WORK ──────────────────────────────────────────────────────────│
+│                                                                  │
+│  /implement          Work on current task                        │
+│       ↓                                                          │
+│  /pre-commit         Quality checks (lint, tests)                │
+│       ↓                                                          │
+│  /commit             Clean commit with good message              │
+│       ↓                                                          │
+│  /update-state       Capture decisions, progress (optional)      │
+│                                                                  │
+│  ─────────────────────────────────────────────────────────────  │
+│                              │                                   │
+│                              ▼                                   │
+│  END SESSION                                                     │
+│  ───────────                                                     │
+│  /whats-next         Save state, prepare handoff                 │
+│       or                                                         │
+│  /whats-next --pause Quick save (lunch break)                    │
+│                                                                  │
+│                              │                                   │
+│                              ▼                                   │
+│  READY FOR PUSH? ───────────────────────────────────────────────│
+│                                                                  │
+│  git-workflow-manager     Prepare branch for PR                  │
+│                           (rebase, squash, push)                 │
+│                                                                  │
+│                              │                                   │
+│                              ▼                                   │
+│  FEATURE COMPLETE? ─────────────────────────────────────────────│
+│                                                                  │
+│  /archive-session    Archive state, start fresh                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**[Full setup guide →](SETUP.md)**
+### The Key Insight
 
----
+**State is always saved.** After every session, CURRENT.md contains:
+- What you were working on
+- What decisions you made  
+- What's blocking you
+- What to do next
 
-## Features
-
-### 🔄 Session Continuity
-
-Claude adapts based on how long since your last session:
+**Next session picks up seamlessly.** `/bootstrap` reads that state and adapts:
 
 | Time Away | What Happens |
 |-----------|--------------|
@@ -55,43 +83,184 @@ Claude adapts based on how long since your last session:
 | 8-30 days | Full context reload, detailed briefing |
 | > 30 days | Environment verification suggested |
 
-### 🤖 Expert Agents
+---
 
-Specialized agents for domain work (Claude asks before delegating):
+## Quick Start
 
-- **rails-expert** - Ruby on Rails development
-- **postgres-expert** - Database design & optimization  
-- **tailwind-expert** - CSS and UI styling
-- **bash-expert** - Shell scripting & automation
-- **git-workflow-manager** - Git operations
-- **code-reviewer** - Code quality & security
+```bash
+# 1. Clone the toolkit
+cd ~
+git clone https://github.com/YOUR_USERNAME/claude-code-toolkit.git
 
-### 📋 Workflow Commands
+# 2. Run the installer
+cd claude-code-toolkit
+./install.sh
 
-| Command | Purpose |
-|---------|---------|
-| `/bootstrap` | Start session with full context |
-| `/whats-next` | End session, create handoff |
-| `/update-state` | Quick mid-session updates |
-| `/archive-session` | Archive when feature completes |
-| `/create-adr` | Document architecture decisions |
-| `/add-to-todos` | Track future work |
-| `/check-todos` | Review outstanding items |
+# 3. Customize your identity
+code ~/.claude/CLAUDE.md   # Look for 🔧 markers
 
-### 📁 Project Structure
+# 4. Set up a project
+cd /path/to/your-project
+~/claude-code-toolkit/init-project.sh
+
+# 5. Start your first session
+claude
+/bootstrap
+```
+
+**[Full setup guide →](SETUP.md)**
+
+---
+
+## Commands Reference
+
+### Session Lifecycle
+
+| Command | When | What It Does |
+|---------|------|--------------|
+| `/bootstrap` | Start of day, switching projects | Full context load, adaptive briefing |
+| `/resume` | Quick return (< few hours) | Lightweight "where was I?" |
+| `/whats-next` | End of session | Full handoff, save state |
+| `/whats-next --pause` | Quick break | Minimal state save |
+| `/whats-next --complete` | Task/feature done | Mark complete, suggest next steps |
+| `/archive-session` | Major milestone done | Archive state, fresh start |
+| `/update-state` | During session | Quick state capture (decisions, blockers) |
+
+### Planning
+
+| Command | When | What It Does |
+|---------|------|--------------|
+| `/create-plan` | Starting multi-session work | Create implementation plan |
+| `/update-plan` | During planned work | Track progress, complete tasks |
+
+### Development
+
+| Command | When | What It Does |
+|---------|------|--------------|
+| `/implement` | Working on a task | Structured implementation workflow |
+| `/pre-commit` | Before committing | Lint, tests, security checks |
+| `/commit` | After pre-commit | Clean commit with good message |
+| `/run-tests` | Anytime | Execute and interpret tests |
+| `/add-tests` | After implementation | Add tests to working code |
+| `/test-first` | When spec is clear | TDD workflow |
+| `/fix-test` | Tests failing | Debug and fix tests |
+
+### Quality & Review
+
+| Command | When | What It Does |
+|---------|------|--------------|
+| `/review` | Before PR | Self-review for quality |
+| `/security-review` | Auth/sensitive code | Security-focused analysis |
+
+### Documentation
+
+| Command | When | What It Does |
+|---------|------|--------------|
+| `/create-adr` | Architecture decision | Document decision with rationale |
+| `/add-to-todos` | Future work identified | Track for later |
+| `/check-todos` | Planning time | Review outstanding items |
+
+### Mental Models (`/consider:*`)
+
+Reference docs for decision-making:
+
+| Model | Purpose |
+|-------|---------|
+| `session-continuity` | Best practices for state management |
+| `quality-gates` | When to apply which checks |
+| `testing-strategy` | What to test, when, how |
+| `agent-dispatch` | When to engage specialist agents |
+
+---
+
+## The State System
+
+### CURRENT.md - Your Session Memory
+
+Lives at `docs/sessions/CURRENT.md`. This is the **single source of truth** for session state:
+
+```markdown
+## Quick Reference
+- **Branch**: feature/user-auth
+- **Plan**: User Authentication (Task 3/7)
+- **Status**: IN_PROGRESS
+- **Uncommitted**: 2 files
+
+## What's Happening
+Implementing JWT token validation. Basic structure done,
+now adding expiry checking and refresh logic.
+
+## Key Decisions
+- JWT over session cookies (stateless, scales better)
+- 15min access token, 7day refresh token
+
+## Next Actions
+1. Complete refresh token endpoint
+2. Add token expiry tests
+3. Update API docs
+```
+
+### The Flow
+
+```
+/whats-next saves → CURRENT.md ← /bootstrap loads
+                        ↑
+              /update-state updates
+```
+
+### Project Structure
 
 ```
 your-project/
 ├── .claude/
-│   └── CLAUDE.md              # Project context (lean)
+│   └── CLAUDE.md              # Project context (tech stack, patterns)
 ├── docs/
 │   ├── sessions/
-│   │   ├── CURRENT.md         # Session state (single source of truth)
-│   │   └── archive/           # Completed sessions
-│   ├── plans/                 # Implementation plans
+│   │   ├── CURRENT.md         # Active session state
+│   │   └── archive/           # Completed feature sessions
+│   ├── plans/
+│   │   ├── ACTIVE.md          # → symlink to current plan
+│   │   └── *.md               # Implementation plans
 │   └── architecture/
 │       └── decisions/         # ADRs
-└── TO-DOS.md                  # Task tracking
+└── TO-DOS.md                  # Future work tracking
+```
+
+---
+
+## Expert Agents
+
+Specialized agents for domain work. Claude asks before delegating.
+
+| Agent | Domain | Use For |
+|-------|--------|---------|
+| `rails-expert` | Ruby on Rails | Service objects, patterns, performance |
+| `postgres-expert` | PostgreSQL | Schema design, queries, optimization |
+| `tailwind-expert` | Tailwind CSS | Layouts, design systems, animations |
+| `bash-expert` | Shell | Complex scripts, automation |
+| `git-workflow-manager` | Git | Rebases, conflicts, branch prep |
+| `code-reviewer` | Review | Quality, security, pre-merge |
+
+### The "Big Dog" Pattern
+
+`git-workflow-manager` handles everything needed to get code from local commits to PR-ready:
+
+```
+Local commits ready (via /commit)
+        │
+        ▼
+┌─────────────────────────────┐
+│   git-workflow-manager      │
+│                             │
+│   • Rebase onto main        │
+│   • Resolve conflicts       │
+│   • Squash WIP commits      │
+│   • Push with safety        │
+│   • Create backups          │
+└─────────────────────────────┘
+        │
+        ▼
+   Branch ready for PR
 ```
 
 ---
@@ -100,76 +269,97 @@ your-project/
 
 ### Your Identity (`~/.claude/CLAUDE.md`)
 
-The template includes markers (🔧) for sections to customize:
+Customize sections marked with 🔧:
 
 ```markdown
 ## Identity
 
 ### Who I Am
 - **Name**: [Your Name]
-- **Role**: [Your Role]
+- **Role**: [Your Role]  
 - **Focus Areas**: [Your domains]
 
 ### How I Work
 - **Philosophy**: [Your approach]
-```
 
 ### Collaboration Style
+- Colleague (default) | Assistant | Mentor
+```
 
-Choose how Claude interacts with you:
+### Adding Agents
 
-- **Colleague** (default) - Claude has opinions, pushes back, acts as peer
-- **Assistant** - Claude follows directions, asks before deviating
-- **Mentor** - Claude explains concepts, points out learning opportunities
-
-### Tech Stack
-
-Remove agents you don't need, add ones you do:
+Add to `~/claude-code-toolkit/global-claude/agents/`:
 
 ```markdown
-## Available Agents
+---
+name: vue-expert
+description: Vue.js development
+---
 
-| Domain | Agent | Use For |
-|--------|-------|---------|
-| Python | python-expert | Python development |
-| React | react-expert | Frontend components |
+# Vue Expert
+
+You are a Vue.js specialist...
 ```
 
 ---
 
-## How It Works
+## Example: A Perfect Day
 
-### The Bootstrap Flow
-
-```
+```bash
+# Morning - Start fresh
+claude
 /bootstrap
-    │
-    ├── Load ~/.claude/CLAUDE.md (your identity)
-    ├── Load .claude/CLAUDE.md (project context)
-    ├── Load docs/sessions/CURRENT.md (session state)
-    ├── Calculate staleness (HOT/WARM/COOL/COLD)
-    ├── Generate adaptive brief
-    └── Offer context-aware next action
-```
 
-### The Development Loop
+# Output:
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# guardian │ feature/mtls-auth │ 🟡 WARM (3 days)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 
+# WHAT'S HAPPENING
+# Implementing mTLS certificate verification.
+# Stopped mid-implementation of chain validation.
+#
+# NEXT ACTIONS
+# → Complete verify_chain in CertificateValidator
+#
+# → Continue with this?
 
-```
-┌─────────────────────────────────────────┐
-│  /bootstrap                             │ ← Start
-├─────────────────────────────────────────┤
-│  Work on tasks                          │
-│  ├── /update-state task complete        │
-│  ├── /update-state decision "..."       │
-│  └── /add-to-todos for future work      │
-├─────────────────────────────────────────┤
-│  /whats-next                            │ ← End
-└─────────────────────────────────────────┘
-         │
-         ↓ (feature complete?)
-┌─────────────────────────────────────────┐
-│  /archive-session                       │
-└─────────────────────────────────────────┘
+# Work on the task
+/implement "Complete verify_chain method"
+
+# Make some commits
+/pre-commit
+/commit
+
+# Lunch break
+/whats-next --pause
+
+# Return
+/resume
+
+# More work...
+/implement
+/pre-commit  
+/commit
+
+# End of day
+/whats-next
+
+# Output:
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# SESSION HANDOFF COMPLETE
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 
+# This Session:
+# • Completed certificate chain validation
+# • Added tests for expired certs
+# 
+# State: feature/mtls-auth │ Clean │ Tests: 67 passing
+# 
+# Next Session Priority:
+# → Implement revocation checking
+
+# Tomorrow, /bootstrap picks up exactly here.
 ```
 
 ---
@@ -178,36 +368,47 @@ Remove agents you don't need, add ones you do:
 
 ```
 claude-code-toolkit/
-├── install.sh                  # Global toolkit installer
+├── install.sh                  # Creates symlinks to ~/.claude/
 ├── init-project.sh             # Project initializer
-├── README.md                   # This file
-├── SETUP.md                    # Detailed setup guide
 │
-├── global-claude/              # → Install to ~/.claude/
-│   ├── CLAUDE.md              # Your identity template
+├── global-claude/              # → ~/.claude/
+│   ├── CLAUDE.md              # Identity template (copied)
 │   ├── agents/                # Expert agents
-│   │   ├── rails-expert.md
-│   │   ├── postgres-expert.md
-│   │   ├── tailwind-expert.md
-│   │   ├── bash-expert.md
-│   │   ├── git-workflow-manager.md
-│   │   └── code-reviewer.md
-│   └── commands/              # Workflow commands
-│       ├── bootstrap.md
-│       ├── whats-next.md
-│       ├── update-state.md
-│       ├── archive-session.md
-│       ├── create-adr.md
-│       ├── add-to-todos.md
-│       └── check-todos.md
+│   ├── commands/              # Workflow commands
+│   │   ├── bootstrap.md
+│   │   ├── resume.md
+│   │   ├── whats-next.md
+│   │   ├── update-state.md
+│   │   ├── archive-session.md
+│   │   ├── create-plan.md
+│   │   ├── update-plan.md
+│   │   ├── implement.md
+│   │   ├── pre-commit.md
+│   │   ├── commit.md
+│   │   ├── run-tests.md
+│   │   ├── add-tests.md
+│   │   ├── test-first.md
+│   │   ├── fix-test.md
+│   │   ├── review.md
+│   │   ├── security-review.md
+│   │   ├── create-adr.md
+│   │   ├── add-to-todos.md
+│   │   ├── check-todos.md
+│   │   └── consider/          # Mental models
+│   │       ├── session-continuity.md
+│   │       ├── quality-gates.md
+│   │       ├── testing-strategy.md
+│   │       └── agent-dispatch.md
+│   └── skills/                # User skills
 │
 ├── project-templates/         # Per-project templates
 │   ├── project-CLAUDE.md     # → .claude/CLAUDE.md
 │   ├── CURRENT.md            # → docs/sessions/CURRENT.md
-│   └── ADR-TEMPLATE.md       # → docs/architecture/decisions/
+│   ├── PLAN-TEMPLATE.md      # Plan structure
+│   └── ADR-TEMPLATE.md       # Decision record structure
 │
-└── examples/                  # Real-world examples
-    └── guardian/             # Example project setup
+└── examples/                  # Example configurations
+    └── guardian/
 ```
 
 ---
@@ -215,24 +416,27 @@ claude-code-toolkit/
 ## FAQ
 
 **Q: Does this work with any project type?**  
-A: Yes! The toolkit is language/framework agnostic. Customize the agents for your stack.
+A: Yes. The workflow is language/framework agnostic. Customize agents for your stack.
 
-**Q: What if I don't want agent delegation?**  
-A: Set "Never delegate" in your CLAUDE.md - Claude will always work directly.
+**Q: What if I forget to run /whats-next?**  
+A: Your work is in git. Next `/bootstrap` will detect uncommitted changes and help you reconstruct state.
 
 **Q: Can I use this with a team?**  
-A: The global `~/.claude/` is personal. Project files (`.claude/`, `docs/`) can be committed and shared.
+A: Global `~/.claude/` is personal. Project files (`.claude/`, `docs/`) can be committed and shared.
 
-**Q: How does state persistence actually work?**  
-A: The `CURRENT.md` file tracks session state. `/bootstrap` reads it, `/whats-next` updates it.
+**Q: How do I update the toolkit?**  
+A: `cd ~/claude-code-toolkit && git pull`. Symlinks pick up changes automatically.
+
+**Q: What if I want to add my own commands?**  
+A: Add to `~/claude-code-toolkit/global-claude/commands/`. For full control, fork the repo.
 
 ---
 
 ## Contributing
 
-Contributions welcome! Ideas:
-- New agents for popular frameworks (Vue, Django, Go, etc.)
-- Improved workflows
+Contributions welcome:
+- New agents for popular frameworks
+- Workflow improvements
 - Better documentation
 - Bug fixes
 

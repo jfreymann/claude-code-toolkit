@@ -186,3 +186,54 @@ Keep Session History trimmed to last 10-15 entries. Older entries are summarized
 # End session
 /whats-next
 ```
+
+---
+
+## Integration
+
+### In the Session Lifecycle
+
+```
+/bootstrap    → Start session
+    ↓
+/update-state → Periodic state capture (mid-session)
+    ↓
+/whats-next   → End session with full handoff
+```
+
+### Frequency
+
+| Situation | Update Frequency |
+|-----------|------------------|
+| Long task | Every 30-60 minutes |
+| After completing sub-tasks | Each completion |
+| After decisions | Immediately |
+| Before breaks | Quick sync |
+| Before risky operations | Capture current state |
+
+### With Plans
+
+When you complete a task:
+1. `/update-state task complete` updates CURRENT.md
+2. Also updates the active plan (marks task complete)
+3. Advances "Continue Here" in plan
+
+### With /commit
+
+After committing:
+```bash
+/commit                           # Creates commit
+/update-state sync               # Updates CURRENT.md with commit info
+```
+
+Or let `/whats-next` capture commits at session end.
+
+### Why Not Just /whats-next?
+
+| Command | Purpose | When |
+|---------|---------|------|
+| `/update-state` | Quick state capture | During work |
+| `/whats-next` | Full handoff | End of session |
+
+`/update-state` is lightweight - just update one thing and continue working.
+`/whats-next` is comprehensive - summarize session, prepare for resumption.
