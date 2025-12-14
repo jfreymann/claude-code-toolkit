@@ -19,19 +19,19 @@ This toolkit provides:
 This is the heart of the toolkit. A simple, repeatable flow for any project:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                     THE PERFECT WORKFLOW                         │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  START SESSION                                                   │
 │  ─────────────                                                   │
-│  /bootstrap          Load full context, see what's next         │
+│  /bootstrap          Load full context, see what's next          │
 │       or                                                         │
 │  /resume             Quick "where was I?" (returning from break) │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
-│  WORK ──────────────────────────────────────────────────────────│
+│  WORK ───────────────────────────────────────────────────────────│
 │                                                                  │
 │  /implement          Work on current task                        │
 │       ↓                                                          │
@@ -41,7 +41,7 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │       ↓                                                          │
 │  /update-state       Capture decisions, progress (optional)      │
 │                                                                  │
-│  ─────────────────────────────────────────────────────────────  │
+│  ────────────────────────────────────────────────────────────────│
 │                              │                                   │
 │                              ▼                                   │
 │  END SESSION                                                     │
@@ -52,18 +52,18 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
-│  READY FOR PUSH? ───────────────────────────────────────────────│
+│  READY FOR PUSH? ────────────────────────────────────────────────│
 │                                                                  │
 │  git-workflow-manager     Prepare branch for PR                  │
 │                           (rebase, squash, push)                 │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
-│  FEATURE COMPLETE? ─────────────────────────────────────────────│
+│  FEATURE COMPLETE? ──────────────────────────────────────────────│
 │                                                                  │
 │  /archive-session    Archive state, start fresh                  │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### The Key Insight
