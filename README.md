@@ -41,6 +41,12 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │       ↓                                                          │
 │  /update-state       Capture decisions, progress (optional)      │
 │                                                                  │
+│  ┌────────────────────────────────────────────────────┐          │
+│  │  CONTEXT HYGIENE (Every 2 hours or when stuck)    │          │
+│  │  /status         Check context health              │          │
+│  │  /clean-slate    Compress & restart if needed      │          │
+│  └────────────────────────────────────────────────────┘          │
+│                                                                  │
 │  ────────────────────────────────────────────────────────────────│
 │                              │                                   │
 │                              ▼                                   │
@@ -55,7 +61,7 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │  READY FOR PUSH? ────────────────────────────────────────────────│
 │                                                                  │
 │  git-workflow-manager     Prepare branch for PR                  │
-│                           (rebase, squash, push)                 │
+│                           (rebase, squash, push, create PR)      │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
@@ -70,7 +76,7 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 
 **State is always saved.** After every session, CURRENT.md contains:
 - What you were working on
-- What decisions you made  
+- What decisions you made
 - What's blocking you
 - What to do next
 
@@ -82,6 +88,26 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 | 1-7 days | Key decisions refreshed, state summary |
 | 8-30 days | Full context reload, detailed briefing |
 | > 30 days | Environment verification suggested |
+
+### Context Hygiene
+
+**Keep context fresh for clearer thinking.** Even with auto-summarization, proactive compression improves productivity:
+
+**Monitor context health:**
+- Run `/status` to check context metrics
+- Thresholds: 🟢 0-40 msgs | 🟡 41-60 msgs | 🔴 61+ msgs
+
+**Compress when needed:**
+- Run `/clean-slate` when context feels cluttered
+- After 2+ hours of work (the "2-hour rule")
+- When stuck or repeating failed approaches
+- Before switching from exploration to implementation
+
+**Result:**
+- Fresh mental model without lost insights
+- Better decision making
+- Faster problem solving
+- No context "baggage"
 
 ---
 
@@ -125,6 +151,8 @@ claude
 | `/whats-next --complete` | Task/feature done | Mark complete, suggest next steps |
 | `/archive-session` | Major milestone done | Archive state, fresh start |
 | `/update-state` | During session | Quick state capture (decisions, blockers) |
+| `/clean-slate` | Context cluttered, stuck, 2+ hours | Compress context, restart fresh |
+| `/status` | Check project health | Repository + **context health** monitoring |
 
 ### Planning
 

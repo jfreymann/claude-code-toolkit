@@ -24,12 +24,40 @@ Execute these analyses in sequence:
 ```
 1. Read existing status.md (if present) to preserve context
 2. git status                          → uncommitted changes
-3. git log --oneline -15               → recent activity  
+3. git log --oneline -15               → recent activity
 4. git branch -vv                      → branch state
 5. Read CHANGELOG.md                   → version/release info
 6. Read TO-DOS.md / PLAN.md            → task state
 7. Scan for TODO/FIXME/HACK comments   → technical debt
+8. Assess context health               → session metrics
 ```
+
+### Step 1.5: Calculate Context Health
+
+**Context health indicators:**
+
+| Messages | Context % | Status | Recommendation |
+|----------|-----------|--------|----------------|
+| 0-20 | 0-30% | 🟢 Fresh | Continue normally |
+| 21-40 | 31-60% | 🟢 Healthy | Continue normally |
+| 41-60 | 61-80% | 🟡 Getting full | Consider /clean-slate after current task |
+| 61-80 | 81-90% | 🟠 Nearly full | Recommend /clean-slate soon |
+| 81+ | 91-100% | 🔴 Critical | Strongly recommend /clean-slate now |
+
+**Calculate approximately:**
+- Estimate ~1.5K tokens per message on average
+- Claude's context window is ~200K tokens
+- Message count is a proxy for context usage
+
+**Check last state save:**
+- Look for most recent entry in `docs/sessions/CURRENT.md`
+- If last save >2 hours ago, note it
+
+**Session duration markers:**
+- < 1 hour: Fresh session
+- 1-2 hours: Normal session
+- 2-3 hours: Consider compression
+- > 3 hours: Strong recommendation to compress
 
 ### Step 2: Cross-Reference Project Commands
 
@@ -100,6 +128,20 @@ Priority-ordered upcoming work:
 | Lint | ✅/⚠️/❓ | [clean/warnings/unknown] |
 | Documentation | ✅/⚠️ | [current/needs update] |
 | Technical Debt | 🟢/🟡/🔴 | [X TODOs, Y FIXMEs] |
+
+## Context Health
+
+| Metric | Value | Recommendation |
+|--------|-------|----------------|
+| Session Messages | [count] messages | [status indicator] |
+| Estimated Context | [percentage]% full (~[X]K tokens) | [action if needed] |
+| Last State Save | [time ago] | [status] |
+| Session Duration | [duration] | [status] |
+
+**Context Status:** [🟢 Fresh / 🟡 Consider compressing / 🔴 Should compress]
+
+[If context is getting full, add recommendation:]
+⚠️  **Context Recommendation**: [Specific action like "Consider running /clean-slate after current task" or "Context is healthy, continue working"]
 
 ## ⛔ Blockers & Dependencies
 
