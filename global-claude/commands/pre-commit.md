@@ -40,6 +40,76 @@ Quality gate before committing code. Catches issues early, ensures consistent co
 
 ## Execution
 
+### Step 0: Branch Safety Check
+
+**CRITICAL**: Never commit directly to protected branches.
+
+```bash
+# Get current branch
+current_branch=$(git branch --show-current)
+main_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+
+# Check if on protected branch
+if [[ "$current_branch" == "main" || "$current_branch" == "master" || "$current_branch" == "$main_branch" ]]; then
+  # Protected branch detected - must create feature branch
+  exit with error
+fi
+```
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  PROTECTED BRANCH: $current_branch
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You're about to commit to a protected branch.
+
+For safety, commits should be made on feature branches.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+→ Create feature branch now? [Y/n]
+```
+
+If **yes**:
+```
+Branch name: [feature/descriptive-name] _
+
+→ Use suggested name or type your own:
+```
+
+Generate suggestion based on:
+- Staged file paths (first changed file/directory)
+- Recent commit message style
+- Common patterns (feat/, fix/, refactor/, etc.)
+
+Then:
+```bash
+git checkout -b "$branch_name"
+```
+
+```
+✓ Created and switched to: $branch_name
+
+Proceeding with pre-commit checks on new branch...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+If **no**:
+```
+✗ Aborting
+
+Will not commit to protected branch: $current_branch
+
+To commit this work:
+  git checkout -b feature/your-branch-name
+  /pre-commit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Exit without running checks.
+
+---
+
 ### Step 1: Identify Changes
 
 ```bash
