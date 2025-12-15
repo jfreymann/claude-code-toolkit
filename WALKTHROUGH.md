@@ -163,9 +163,21 @@ After implementing:
 ```
 
 Claude runs:
+- **Branch safety check** (never commit to main/master)
 - Linting (auto-fixes what it can)
 - Tests (affected files or full suite)
 - Security checks (if touching sensitive code)
+
+If you're on main/master, Claude prompts:
+```
+⚠️  PROTECTED BRANCH: main
+
+You're about to commit to a protected branch.
+For safety, commits should be made on feature branches.
+
+→ Create feature branch now? [Y/n]
+Branch name: [feature/descriptive-name]
+```
 
 If everything passes:
 
@@ -174,6 +186,7 @@ If everything passes:
 ```
 
 Claude:
+- **Checks branch safety** (creates feature branch if needed)
 - Stages appropriate files
 - Writes a good commit message (conventional format)
 - Commits

@@ -138,12 +138,14 @@ claude
 | Command | When | What It Does |
 |---------|------|--------------|
 | `/implement` | Working on a task | Structured implementation workflow |
-| `/pre-commit` | Before committing | Lint, tests, security checks |
-| `/commit` | After pre-commit | Clean commit with good message |
+| `/pre-commit` | Before committing | Lint, tests, security checks, **branch safety** |
+| `/commit` | After pre-commit | Clean commit with good message, **branch safety** |
 | `/run-tests` | Anytime | Execute and interpret tests |
 | `/add-tests` | After implementation | Add tests to working code |
 | `/test-first` | When spec is clear | TDD workflow |
 | `/fix-test` | Tests failing | Debug and fix tests |
+
+**Note:** `/pre-commit` and `/commit` include branch safety checks - they'll never let you commit to main/master. If you're on a protected branch, they'll prompt you to create a feature branch first.
 
 ### Quality & Review
 
@@ -242,6 +244,8 @@ Specialized agents for domain work. Claude asks before delegating.
 | `code-reviewer` | Review | Quality, security, pre-merge |
 
 **Special**: `git-workflow-manager` is triggered when you say **"push code"**. It ensures your work is never pushed to main/master - always creates a feature branch first.
+
+**Branch Safety**: `/commit` and `/pre-commit` also protect against committing directly to main/master. If you're on a protected branch, they'll prompt you to create a feature branch before proceeding.
 
 ### The "Big Dog" Pattern
 

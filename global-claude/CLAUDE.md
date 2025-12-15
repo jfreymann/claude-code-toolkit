@@ -147,6 +147,8 @@ Use these specialists for domain-specific work:
 
 **Note:** `git-workflow-manager` is automatically triggered when you say "push code". It ensures your work is never pushed to main/master - always creates a feature branch first.
 
+**Branch Safety:** `/commit` and `/pre-commit` also include branch safety checks. If you're on main/master, they'll prompt you to create a feature branch before proceeding with the commit.
+
 <!-- 
 Add more agents for your stack. Examples you might add:
 | Python | python-expert | Python development, async, type hints |
