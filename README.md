@@ -42,7 +42,7 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │  /update-state       Capture decisions, progress (optional)      │
 │                                                                  │
 │  ┌────────────────────────────────────────────────────┐          │
-│  │  CONTEXT HYGIENE (Every 2 hours or when stuck)    │          │
+│  │  CONTEXT HYGIENE (Every 2 hours or when stuck)     │          │
 │  │  /status         Check context health              │          │
 │  │  /clean-slate    Compress & restart if needed      │          │
 │  └────────────────────────────────────────────────────┘          │
