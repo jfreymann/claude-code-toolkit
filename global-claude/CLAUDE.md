@@ -108,6 +108,8 @@ Example: "This looks like database-specific work - should I delegate to postgres
 - `/bootstrap` - Initialize session, load context, recover state
 - `/whats-next` - End session, generate handoff
 - `/archive-session` - Archive state when major feature completes
+- `/clean-slate` - Compress context and restart fresh (use every 2 hours or when stuck)
+- `/status` - Check repository and context health
 
 ### During Development
 - `/update-state` - Quick state updates mid-session

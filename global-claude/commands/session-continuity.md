@@ -295,6 +295,409 @@ When context window fills up:
 | Been a while | CURRENT.md fully + Plan if active |
 | Complex work | Full bootstrap with project context |
 
+---
+
+## Context Hygiene
+
+**Proactive context management prevents problems before they occur.**
+
+Context isn't just about window limits - it's about mental clarity. Even with unlimited context, cluttered sessions make it harder to think clearly.
+
+### The Context Hygiene Philosophy
+
+```
+Compressed context = Clearer thinking
+Less clutter = Better decisions
+Fresh start = New perspectives
+```
+
+### When to Compress Context
+
+#### 🔴 Critical Signals (Act Now)
+
+These mean you should run `/clean-slate` immediately:
+
+- **Can't think clearly** - Decision making feels muddy or circular
+- **Repeating failed approaches** - Trying the same thing 3+ times
+- **Lost track of attempts** - Don't remember what you've tried
+- **Context feels "heavy"** - Session feels overwhelming or cluttered
+- **Stuck in a rut** - Keep hitting the same dead ends
+
+#### 🟡 Warning Signs (Consider Compressing)
+
+These suggest context compression would help:
+
+- **Session > 2 hours** - Even if making progress
+- **Read 30+ files** - Extensive exploration phase
+- **Tried 5+ approaches** - Multiple failed debugging attempts
+- **Hard to recall what worked** - Losing track of findings
+- **About to switch mental models** - Exploration → implementation
+- **Context >70% full** - Per `/status` health check
+
+#### 🟢 Preventive Patterns (Good Practice)
+
+Proactive compression before problems emerge:
+
+- **Finished exploration, starting implementation** - Clean break between phases
+- **Found root cause, ready to fix** - Compress investigation, start fresh for solution
+- **About to make architectural decision** - Clear head for important choices
+- **Switching between unrelated tasks** - Clean slate for new context
+- **Before major refactoring** - Fresh mental model for restructuring
+
+### The Compression Workflow
+
+```
+┌─────────────────────────────────────────────────┐
+│         CONTEXT COMPRESSION CYCLE               │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  MONITOR                                        │
+│  /status → Shows context health                 │
+│  ↓ "🟡 Getting full - Consider /clean-slate"    │
+│                                                 │
+│  ASSESS                                         │
+│  Am I:                                          │
+│  • Stuck or repeating myself?                   │
+│  • Switching mental models?                     │
+│  • Ready to implement after exploring?          │
+│  ↓ Yes to any? Compress.                        │
+│                                                 │
+│  COMPRESS                                       │
+│  /clean-slate                                   │
+│  ↓ Saves insights, drops clutter                │
+│  ↓ Exits session                                │
+│                                                 │
+│  RESUME                                         │
+│  [Restart Claude Code]                          │
+│  /bootstrap --quick                             │
+│  ↓ Loads essentials, fresh context              │
+│                                                 │
+│  WORK                                           │
+│  Continue with clear mental model               │
+│  ↓ Make progress                                │
+│  ↓ Monitor context health                       │
+│  ↓ [cycle repeats as needed]                    │
+│                                                 │
+└─────────────────────────────────────────────────┘
+```
+
+### Three Compression Strategies
+
+#### Strategy 1: The 2-Hour Rule
+
+**Pattern:** Compress every 2 hours of active work, regardless of progress.
+
+**Why:** Fresh context improves thinking even when not stuck.
+
+**How:**
+```
+[Work for 2 hours]
+/clean-slate
+
+[Restart]
+/bootstrap --quick
+"Continue with [specific next task]"
+```
+
+**Best for:** Long exploration sessions, research-heavy work, complex debugging.
+
+#### Strategy 2: Phase Transitions
+
+**Pattern:** Compress when switching mental models.
+
+**Common transitions:**
+- Exploration → Implementation
+- Debugging → Root cause fix
+- Research → Architecture decision
+- Planning → Execution
+
+**How:**
+```
+[Finish exploration phase]
+Found the issue: [describe root cause]
+/clean-slate
+
+[Restart]
+/bootstrap --quick
+"Implement fix for [root cause] in [file]"
+```
+
+**Best for:** Multi-phase work, TDD workflows, spike-then-implement patterns.
+
+#### Strategy 3: Stuck Detection
+
+**Pattern:** Compress when you notice you're stuck.
+
+**Stuck indicators:**
+- Tried same approach 3+ times
+- Can't think of new approaches
+- Keep forgetting what you already tried
+- Decision paralysis
+
+**How:**
+```
+[Realize you're stuck]
+/clean-slate
+
+[Restart]
+/bootstrap --quick
+"Review dead ends in CURRENT.md and suggest fresh approach"
+```
+
+**Best for:** Difficult bugs, unclear requirements, novel problems.
+
+### What Gets Compressed
+
+#### Preserved (Saved to CURRENT.md)
+
+✅ **Keep:**
+- Root causes and insights
+- Key decisions with rationale
+- Dead ends to avoid
+- Next specific actions
+- Critical file locations
+- Important patterns discovered
+
+#### Dropped (Intentionally Lost)
+
+🗑️ **Drop:**
+- Failed debugging attempts (details)
+- Exploratory file reads (full content)
+- Repeated explanations
+- Tangential discussions
+- Implementation details (in code now)
+- Verbose error messages
+
+#### Example: Before/After Compression
+
+**Before Compression (47 messages, cluttered):**
+```
+[Tried approach A - failed]
+[Read file X - not relevant]
+[Tried approach B - failed]
+[Read file Y - found pattern]
+[Tried approach C - partial success]
+[Explained pattern to user]
+[User asked question]
+[Explained again differently]
+[Read file Z - confirmed pattern]
+[Tried approach D - failed]
+[Discussion about architecture]
+[Back to approach C]
+[Modified approach C - success!]
+```
+
+**After Compression (CURRENT.md essentials):**
+```markdown
+## What's Happening
+Found race condition in token validator causing intermittent failures.
+Modified approach C (add mutex lock) solved it.
+
+## Key Decisions
+- Use mutex over queue (simpler, sufficient for our load)
+- Lock at validator level, not token level (prevents deadlock)
+
+## Dead Ends
+- ✗ Approach A: Caching made race worse
+- ✗ Approach B: Queue added complexity, didn't help
+- ✗ Approach D: Atomic operations insufficient
+
+## Next Actions
+1. Implement mutex fix in `app/services/token_validator.rb:45`
+2. Add concurrency test to prevent regression
+3. Document locking strategy in code comments
+```
+
+### Integration with Status Monitoring
+
+Use `/status` to monitor context health throughout session:
+
+```
+# At session start
+/bootstrap
+
+# After 1 hour of work
+/status
+→ Shows: "🟢 Fresh - 25 messages, 35% full"
+→ Continue working
+
+# After 2 hours
+/status
+→ Shows: "🟡 Getting full - 55 messages, 75% full"
+→ Consider compressing after current task
+
+# After completing task
+/clean-slate
+```
+
+### The Context Health Dashboard
+
+Run `/status` regularly to see:
+
+| Metric | Healthy Range | Action Needed |
+|--------|---------------|---------------|
+| Messages | 0-40 | None - continue normally |
+| Messages | 41-60 | Consider compressing after task |
+| Messages | 61-80 | Recommend compressing soon |
+| Messages | 81+ | Strongly recommend compressing now |
+| Session Duration | < 2 hours | Normal - monitor |
+| Session Duration | 2-3 hours | Consider compressing |
+| Session Duration | > 3 hours | Recommend compressing |
+| Last State Save | < 1 hour ago | Recent - good |
+| Last State Save | 1-2 hours ago | Should save soon |
+| Last State Save | > 2 hours ago | Save state now |
+
+### Common Patterns
+
+#### Pattern: Debug → Compress → Implement
+
+```
+1. Debugging session (lots of exploration, 50+ messages)
+   → Found root cause
+   → /clean-slate
+
+2. Fresh session (focused, 5 messages)
+   → /bootstrap --quick
+   → Implement fix
+   → /commit
+```
+
+**Result:** Clear implementation without debugging clutter.
+
+#### Pattern: Explore → Compress → Decide
+
+```
+1. Exploration (grepped 50 files, read 20 files)
+   → Understand patterns
+   → /clean-slate
+
+2. Fresh session (clear thinking)
+   → /bootstrap --quick
+   → Make architectural decision
+   → /create-adr
+```
+
+**Result:** Important decision made with clear head.
+
+#### Pattern: Stuck → Compress → Fresh Perspective
+
+```
+1. Stuck on problem (tried 8 approaches, all failed)
+   → Can't think clearly anymore
+   → /clean-slate
+
+2. Fresh session (new perspective)
+   → /bootstrap --quick
+   → "What did I try? What haven't I tried?"
+   → Approach #9 succeeds
+```
+
+**Result:** Fresh eyes see what tired eyes missed.
+
+### Anti-Patterns (What NOT to Do)
+
+❌ **Don't wait for context to fill completely**
+- Proactive compression is better than reactive
+- Compress when thinking gets muddy, not when forced
+
+❌ **Don't compress mid-thought**
+- Finish current implementation unit first
+- Or use `--keep-files` flag to save partial work
+
+❌ **Don't compress without saving state**
+- Always run `/clean-slate` (which saves state)
+- Never just restart without capturing context
+
+❌ **Don't over-compress**
+- Don't compress every 30 minutes
+- Some context continuity is valuable
+- 2-hour rule is a good balance
+
+❌ **Don't treat compression as failure**
+- Compression is a tool, not an admission of defeat
+- Professional developers manage cognitive load
+- Fresh context is a competitive advantage
+
+### Best Practices
+
+✅ **The 2-Hour Check-in**
+```
+Set a timer for 2 hours. When it goes off:
+1. Run /status
+2. Assess: Am I making progress? Or stuck?
+3. Decide: Continue or compress?
+```
+
+✅ **The Phase Transition**
+```
+When switching from exploration to implementation:
+1. /clean-slate before starting implementation
+2. Compress all research into clear next actions
+3. Start implementation with fresh context
+```
+
+✅ **The Stuck Detector**
+```
+If you've tried the same thing 3 times:
+1. Stop immediately
+2. /clean-slate
+3. Restart with fresh perspective
+```
+
+✅ **The End-of-Session Save**
+```
+Before ending your day:
+1. /whats-next (saves full state)
+2. Check status.md is current
+3. Tomorrow: /bootstrap (loads everything)
+
+Not /clean-slate - that's for mid-session compression
+```
+
+### FAQ
+
+**Q: Won't I lose important context if I compress?**
+A: No - `/clean-slate` saves all insights, decisions, and next actions to CURRENT.md. You lose clutter, not knowledge.
+
+**Q: How is this different from /whats-next?**
+A: `/whats-next` is for ending your session. `/clean-slate` is for continuing work with fresh context. Both save state, different purposes.
+
+**Q: Should I compress every hour?**
+A: No - that's over-compressing. Every 2 hours is a good baseline. Compress more if stuck, less if flowing.
+
+**Q: What if I'm making progress?**
+A: Progress is great! But even productive sessions benefit from compression. Fresh context = clearer thinking. The 2-hour rule applies regardless of progress.
+
+**Q: Can I compress without restarting Claude?**
+A: No - the value of compression comes from actually getting fresh context. Save state, restart, load essentials.
+
+**Q: Will my uncommitted code be lost?**
+A: No - `/clean-slate` will prompt you to commit first, or use `--keep-files` to save file contents to state.
+
+---
+
+## Summary: Context Hygiene Workflow
+
+**Monitor:**
+- Use `/status` to check context health
+- Watch for warning signs (stuck, >2 hours, >60 messages)
+
+**Compress:**
+- Run `/clean-slate` when context gets cluttered
+- Saves insights, drops clutter
+- Exits session for fresh restart
+
+**Resume:**
+- Restart Claude Code
+- Run `/bootstrap --quick`
+- Load essentials, not full history
+
+**Result:**
+- Clearer thinking
+- Better decisions
+- No lost knowledge
+- Improved productivity
+
 ## Integration with Other Commands
 
 ### With Planning

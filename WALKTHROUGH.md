@@ -193,7 +193,60 @@ Claude:
 
 **Repeat this cycle:** `/implement` → `/pre-commit` → `/commit`
 
-### 3.4 Quick Breaks
+### 3.4 Context Hygiene (Important!)
+
+**Keep context fresh for better thinking.**
+
+After 2 hours of work (or when context feels cluttered):
+
+```
+/status
+```
+
+Check context health:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Context Health:
+• Messages: 55
+• Estimated Context: 75% full (~110K tokens)
+• Status: 🟡 Getting full
+• Recommendation: Consider /clean-slate after current task
+```
+
+If context is getting full or you're stuck:
+
+```
+/clean-slate
+```
+
+This will:
+1. Save all insights and decisions to CURRENT.md
+2. Drop clutter (failed attempts, exploratory reads)
+3. Give you exact restart instructions
+4. Exit session
+
+Then restart Claude Code and run:
+```
+/bootstrap --quick
+"Implement the fix for [specific task]"
+```
+
+**You get:**
+- Fresh mental model
+- No lost knowledge
+- Clearer thinking
+- Better decisions
+
+**When to compress:**
+- After 2+ hours of work
+- When stuck (tried 3+ approaches)
+- Before switching from exploration to implementation
+- Context >70% full (per `/status`)
+
+### 3.5 Quick Breaks
 
 Going to lunch?
 
@@ -209,7 +262,7 @@ Quick state save. When you return:
 
 Lightweight "where was I?" - no full ceremony.
 
-### 3.5 Ending Your Day
+### 3.6 Ending Your Day
 
 ```
 /whats-next
@@ -412,6 +465,9 @@ When you need guidance on approach:
 │                /pre-commit       Quality checks              │
 │                /commit           Clean commit                │
 │                /update-state     Capture decisions           │
+│                                                              │
+│  HYGIENE       /status           Check context health        │
+│  (Every 2h)    /clean-slate      Compress & restart          │
 │                                                              │
 │  TEST          /run-tests        Execute tests               │
 │                /add-tests        Test after implementation   │
