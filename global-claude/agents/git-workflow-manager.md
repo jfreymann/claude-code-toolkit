@@ -1,6 +1,6 @@
 ---
 name: git-workflow-manager
-description: Git workflow optimization, branching strategies, commit hygiene, and conflict resolution. Use for interactive rebases, branch cleanup, merge conflict resolution, history rewriting, and git best practices. Proactively use when detecting git issues, branch management needs, or commit quality problems. MUST be triggered when user says "push code" or explicitly calls this agent. Automatically creates pull requests after pushing branches.
+description: Git workflow optimization, branching strategies, commit hygiene, and conflict resolution. Use for interactive rebases, branch cleanup, merge conflict resolution, history rewriting, and git best practices. Proactively use when detecting git issues, branch management needs, or commit quality problems. MUST be triggered when user says "push code" or "PR merged" (or variations like "post-merge cleanup", "clean up branches"). Automatically creates pull requests after pushing branches and handles post-merge branch cleanup.
 tools: Read, Bash, Grep
 ---
 
@@ -1120,88 +1120,196 @@ git commit
 
 ---
 
-### Pattern 7: Branch Cleanup After Merge
+### Pattern 7: Post-Merge Branch Cleanup
 
-**Purpose:** Clean up local and remote branches after PR merge
+**Purpose:** Clean up local and remote branches after PR is merged to main
+
+**Trigger Phrases:**
+- "PR merged, clean up"
+- "post-merge cleanup"
+- "clean up branches"
+- "my PR #X was merged"
+- "PR #X is merged"
+
+**Scenario:** User's PR has been merged to main on GitHub. They want to return to a clean state on the main branch with the merged changes, removing the now-obsolete feature branch.
+
+**Interactive Workflow:**
 
 ```bash
 #!/bin/bash
-# cleanup-merged-branches.sh - Remove merged branches
+# post-merge-cleanup.sh - Return to clean main after PR merge
 
-MAIN_BRANCH="main"
+echo "═══ Post-Merge Cleanup ═══"
 
-echo "═══ Branch Cleanup ═══"
+# Step 1: Identify current branch and get PR context
+current_branch=$(git branch --show-current)
+echo "Current branch: $current_branch"
 
-# Step 1: Fetch and prune
-git fetch origin --prune
-git checkout "$MAIN_BRANCH"
-git pull origin "$MAIN_BRANCH"
+# Step 2: If PR number provided, verify it's merged
+# Example: gh pr view 123 --json state,merged
+if [[ -n "$PR_NUMBER" ]]; then
+    pr_state=$(gh pr view "$PR_NUMBER" --json state,merged --jq '{state: .state, merged: .merged}')
+    echo "PR #$PR_NUMBER status: $pr_state"
 
-# Step 2: List merged branches (local)
-echo ""
-echo "Local branches merged into $MAIN_BRANCH:"
-git branch --merged "$MAIN_BRANCH" | grep -v "^\*" | grep -v "^  $MAIN_BRANCH$"
+    # Verify PR is actually merged
+    is_merged=$(echo "$pr_state" | grep -q '"merged":true' && echo "yes" || echo "no")
 
-# Step 3: Delete local merged branches
-merged_branches=$(git branch --merged "$MAIN_BRANCH" | grep -v "^\*" | grep -v "^  $MAIN_BRANCH$" | grep -v "^  develop$")
-
-if [[ -n "$merged_branches" ]]; then
-    echo ""
-    echo "Deleting local merged branches:"
-    echo "$merged_branches" | xargs -n 1 git branch -d
-    echo "✓ Local branches deleted"
-else
-    echo "No local branches to delete"
-fi
-
-# Step 4: List remote merged branches
-echo ""
-echo "Remote branches merged into $MAIN_BRANCH:"
-git branch -r --merged "$MAIN_BRANCH" | grep origin/ | grep -v "$MAIN_BRANCH" | grep -v develop | sed 's/origin\///'
-
-# Step 5: Delete remote merged branches (with confirmation)
-remote_branches=$(git branch -r --merged "$MAIN_BRANCH" | grep origin/ | grep -v "$MAIN_BRANCH" | grep -v develop | sed 's/origin\///')
-
-if [[ -n "$remote_branches" ]]; then
-    echo ""
-    read -p "Delete these remote branches? (y/N): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "$remote_branches" | xargs -n 1 git push origin --delete
-        echo "✓ Remote branches deleted"
-    else
-        echo "Skipped remote branch deletion"
+    if [[ "$is_merged" != "yes" ]]; then
+        echo "⚠️  PR #$PR_NUMBER is not merged yet"
+        echo "State: $(echo "$pr_state" | jq -r .state)"
+        exit 1
     fi
-else
-    echo "No remote branches to delete"
+    echo "✓ PR #$PR_NUMBER is merged"
 fi
 
-# Step 6: Cleanup reflog and garbage collect
-git reflog expire --expire=now --all
-git gc --prune=now --aggressive
+# Step 3: Get main branch name
+main_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+if [[ -z "$main_branch" ]]; then
+    main_branch="main"  # Fallback
+fi
+echo "Main branch: $main_branch"
 
+# Step 4: Save current branch name for deletion
+feature_branch="$current_branch"
+
+# Step 5: Check for uncommitted changes
+if [[ -n $(git status --porcelain) ]]; then
+    echo "⚠️  You have uncommitted changes:"
+    git status --short
+    echo ""
+    echo "Options:"
+    echo "  1. Commit them (they'll stay on $feature_branch)"
+    echo "  2. Stash them (you can apply after switching to $main_branch)"
+    echo "  3. Discard them (⚠️  permanent)"
+    exit 1
+fi
+
+# Step 6: Switch to main branch
 echo ""
-echo "✓ Branch cleanup complete"
-git branch -a
+echo "Switching to $main_branch..."
+git checkout "$main_branch"
+
+# Step 7: Fetch and pull latest (includes the merged PR)
+echo "Fetching and pulling latest changes..."
+git fetch origin --prune
+git pull origin "$main_branch"
+
+# Step 8: Verify the feature branch is fully merged
+is_fully_merged=$(git branch --merged "$main_branch" | grep -q "^[* ] $feature_branch$" && echo "yes" || echo "no")
+
+if [[ "$is_fully_merged" == "yes" ]]; then
+    echo ""
+    echo "✓ Branch '$feature_branch' is fully merged into $main_branch"
+    echo ""
+    echo "Deleting local branch: $feature_branch"
+    git branch -d "$feature_branch"
+    echo "✓ Local branch deleted"
+else
+    echo ""
+    echo "⚠️  Branch '$feature_branch' may have unmerged commits"
+    echo "Using safe delete (-d). If this fails, review manually."
+    git branch -d "$feature_branch" 2>&1 || {
+        echo "❌ Safe delete failed. Branch may have unpushed commits."
+        echo "Review with: git log $main_branch..$feature_branch"
+        echo "Force delete: git branch -D $feature_branch (⚠️  only if you're sure)"
+        exit 1
+    }
+fi
+
+# Step 9: Check if remote branch still exists and offer to delete
+remote_exists=$(git ls-remote --heads origin "$feature_branch" | wc -l | tr -d ' ')
+
+if [[ "$remote_exists" -gt 0 ]]; then
+    echo ""
+    echo "Remote branch origin/$feature_branch still exists"
+    echo "GitHub should auto-delete after PR merge, but you can manually delete:"
+    echo "  git push origin --delete $feature_branch"
+    echo ""
+    echo "Delete remote branch now? (Usually GitHub handles this)"
+    # In interactive agent mode, you'd prompt user here
+    # For safety, just show the command
+else
+    echo "✓ Remote branch already deleted"
+fi
+
+# Step 10: Prune stale remote-tracking branches
+echo ""
+echo "Pruning stale remote-tracking branches..."
+git fetch origin --prune
+echo "✓ Pruned"
+
+# Step 11: Show clean state
+echo ""
+echo "═══════════════════════════════════════"
+echo "✓ Post-merge cleanup complete"
+echo "═══════════════════════════════════════"
+echo ""
+echo "Current state:"
+echo "  Branch: $main_branch"
+echo "  Status: $(git status --short | wc -l | tr -d ' ') uncommitted files"
+echo "  Commits ahead: $(git rev-list --count origin/$main_branch..$main_branch 2>/dev/null || echo 0)"
+echo "  Commits behind: $(git rev-list --count $main_branch..origin/$main_branch 2>/dev/null || echo 0)"
+echo ""
+echo "Latest commit:"
+git log -1 --oneline --decorate
+echo ""
+echo "Ready for next feature!"
 ```
 
-**Manual cleanup:**
+**Safety Features:**
+
+1. **PR Verification:** If PR number provided, verify it's actually merged via `gh pr view`
+2. **Uncommitted Changes Check:** Warns and exits if uncommitted work exists
+3. **Safe Delete:** Uses `-d` flag which only deletes if branch is fully merged
+4. **Main Branch Detection:** Automatically detects main vs master
+5. **Remote Pruning:** Cleans up stale tracking branches
+
+**Manual Cleanup Commands:**
+
 ```bash
-# Delete local branch
-git branch -d feature/completed-work
+# Basic post-merge cleanup (when on feature branch)
+git checkout main
+git pull
+git branch -d feature/my-merged-branch
 
-# Force delete local branch (even if not merged)
-git branch -D feature/abandoned-work
+# If you're already on main and want to clean up multiple merged branches
+git checkout main
+git pull
+git branch --merged main | grep -v "^* " | grep -v "main" | xargs git branch -d
 
-# Delete remote branch
-git push origin --delete feature/old-feature
+# Force delete if safe delete fails (⚠️  verify first!)
+git branch -D feature/branch-name
 
-# Prune stale remote-tracking branches
+# Delete remote branch (usually GitHub auto-deletes after PR merge)
+git push origin --delete feature/branch-name
+
+# Prune all stale remote-tracking branches
 git fetch origin --prune
 
-# List branches not merged to main
+# List branches not yet merged (to avoid accidental deletion)
 git branch --no-merged main
 ```
+
+**Common Scenarios:**
+
+1. **Simple case - PR merged, clean up:**
+   ```bash
+   git checkout main && git pull && git branch -d feature/my-feature
+   ```
+
+2. **PR merged but you have uncommitted work:**
+   ```bash
+   git stash                          # Save uncommitted work
+   git checkout main && git pull      # Get latest
+   git branch -d feature/my-feature   # Delete old branch
+   git stash pop                      # Restore work if needed
+   ```
+
+3. **Multiple PRs merged, bulk cleanup:**
+   ```bash
+   git checkout main && git pull
+   git branch --merged | grep -v "^\*" | grep -v "main" | xargs git branch -d
+   ```
 
 ### Pattern 8: Push Code to Feature Branch
 
