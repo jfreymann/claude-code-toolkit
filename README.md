@@ -43,7 +43,7 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │                                                                  │
 │  ┌────────────────────────────────────────────────────┐          │
 │  │  CONTEXT HYGIENE (Every 2 hours or when stuck)     │          │
-│  │  /status         Check context health              │          │
+│  │  /context-check  Check context health              │          │
 │  │  /clean-slate    Compress & restart if needed      │          │
 │  └────────────────────────────────────────────────────┘          │
 │                                                                  │
@@ -94,8 +94,8 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 **Keep context fresh for clearer thinking.** Even with auto-summarization, proactive compression improves productivity:
 
 **Monitor context health:**
-- Run `/status` to check context metrics
-- Thresholds: 🟢 0-40 msgs | 🟡 41-60 msgs | 🔴 61+ msgs
+- Run `/context-check` for quick health assessment
+- Based on session duration: 🟢 0-1hr | 🟡 1-2hrs | 🟠 2-3hrs | 🔴 3+hrs
 
 **Compress when needed:**
 - Run `/clean-slate` when context feels cluttered
@@ -152,7 +152,7 @@ claude
 | `/archive-session` | Major milestone done | Archive state, fresh start |
 | `/update-state` | During session | Quick state capture (decisions, blockers) |
 | `/clean-slate` | Context cluttered, stuck, 2+ hours | Compress context, restart fresh |
-| `/status` | Check project health | Repository + **context health** monitoring |
+| `/context-check` | Periodic check | Quick **context health** assessment |
 
 ### Planning
 

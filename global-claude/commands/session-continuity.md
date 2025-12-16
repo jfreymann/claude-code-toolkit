@@ -332,7 +332,7 @@ These suggest context compression would help:
 - **Tried 5+ approaches** - Multiple failed debugging attempts
 - **Hard to recall what worked** - Losing track of findings
 - **About to switch mental models** - Exploration → implementation
-- **Context >70% full** - Per `/status` health check
+- **Session >2hrs** - Per `/context-check` health assessment
 
 #### 🟢 Preventive Patterns (Good Practice)
 
@@ -352,7 +352,7 @@ Proactive compression before problems emerge:
 ├─────────────────────────────────────────────────┤
 │                                                 │
 │  MONITOR                                        │
-│  /status → Shows context health                 │
+│  /context-check → Shows context health          │
 │  ↓ "🟡 Getting full - Consider /clean-slate"    │
 │                                                 │
 │  ASSESS                                         │
@@ -508,22 +508,22 @@ Modified approach C (add mutex lock) solved it.
 3. Document locking strategy in code comments
 ```
 
-### Integration with Status Monitoring
+### Integration with Context Monitoring
 
-Use `/status` to monitor context health throughout session:
+Use `/context-check` to monitor context health throughout session:
 
 ```
 # At session start
 /bootstrap
 
 # After 1 hour of work
-/status
-→ Shows: "🟢 Fresh - 25 messages, 35% full"
+/context-check
+→ Shows: "🟢 Healthy - Session: 1.0 hours"
 → Continue working
 
 # After 2 hours
-/status
-→ Shows: "🟡 Getting full - 55 messages, 75% full"
+/context-check
+→ Shows: "🟡 Getting full - Session: 2.1 hours"
 → Consider compressing after current task
 
 # After completing task
@@ -532,20 +532,14 @@ Use `/status` to monitor context health throughout session:
 
 ### The Context Health Dashboard
 
-Run `/status` regularly to see:
+Run `/context-check` regularly to see:
 
-| Metric | Healthy Range | Action Needed |
-|--------|---------------|---------------|
-| Messages | 0-40 | None - continue normally |
-| Messages | 41-60 | Consider compressing after task |
-| Messages | 61-80 | Recommend compressing soon |
-| Messages | 81+ | Strongly recommend compressing now |
-| Session Duration | < 2 hours | Normal - monitor |
-| Session Duration | 2-3 hours | Consider compressing |
-| Session Duration | > 3 hours | Recommend compressing |
-| Last State Save | < 1 hour ago | Recent - good |
-| Last State Save | 1-2 hours ago | Should save soon |
-| Last State Save | > 2 hours ago | Save state now |
+| Session Duration | Status | Action Needed |
+|-----------------|--------|---------------|
+| 0-1 hour | 🟢 Fresh/Healthy | None - continue normally |
+| 1-2 hours | 🟡 Getting full | Consider compressing after task |
+| 2-3 hours | 🟠 Nearly full | Recommend compressing soon |
+| 3+ hours | 🔴 Critical | Strongly recommend compressing now |
 
 ### Common Patterns
 
@@ -623,7 +617,7 @@ Run `/status` regularly to see:
 ✅ **The 2-Hour Check-in**
 ```
 Set a timer for 2 hours. When it goes off:
-1. Run /status
+1. Run /context-check
 2. Assess: Am I making progress? Or stuck?
 3. Decide: Continue or compress?
 ```
@@ -648,8 +642,7 @@ If you've tried the same thing 3 times:
 ```
 Before ending your day:
 1. /whats-next (saves full state)
-2. Check status.md is current
-3. Tomorrow: /bootstrap (loads everything)
+2. Tomorrow: /bootstrap (loads everything)
 
 Not /clean-slate - that's for mid-session compression
 ```
@@ -679,8 +672,8 @@ A: No - `/clean-slate` will prompt you to commit first, or use `--keep-files` to
 ## Summary: Context Hygiene Workflow
 
 **Monitor:**
-- Use `/status` to check context health
-- Watch for warning signs (stuck, >2 hours, >60 messages)
+- Use `/context-check` to assess context health
+- Watch for warning signs (stuck, >2 hours session)
 
 **Compress:**
 - Run `/clean-slate` when context gets cluttered

@@ -109,7 +109,7 @@ Example: "This looks like database-specific work - should I delegate to postgres
 - `/whats-next` - End session, generate handoff
 - `/archive-session` - Archive state when major feature completes
 - `/clean-slate` - Compress context and restart fresh (use every 2 hours or when stuck)
-- `/status` - Check repository and context health
+- `/context-check` - Quick context health assessment
 
 ### During Development
 - `/update-state` - Quick state updates mid-session
