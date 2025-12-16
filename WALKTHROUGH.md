@@ -200,20 +200,23 @@ Claude:
 After 2 hours of work (or when context feels cluttered):
 
 ```
-/status
+/context-check
 ```
 
 Check context health:
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-STATUS
+CONTEXT HEALTH CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Context Health:
-• Messages: 55
-• Estimated Context: 75% full (~110K tokens)
-• Status: 🟡 Getting full
-• Recommendation: Consider /clean-slate after current task
+Session Duration: 2.1 hours
+Estimated Context: ~75% full
+Last State Save: 45 minutes ago
+
+Status: 🟡 Getting full
+
+⚠️  Context is accumulating. Consider /clean-slate after
+   completing your current task.
 ```
 
 If context is getting full or you're stuck:
@@ -244,7 +247,7 @@ Then restart Claude Code and run:
 - After 2+ hours of work
 - When stuck (tried 3+ approaches)
 - Before switching from exploration to implementation
-- Context >70% full (per `/status`)
+- Session duration >2hrs (per `/context-check`)
 
 ### 3.5 Quick Breaks
 
@@ -466,7 +469,7 @@ When you need guidance on approach:
 │                /commit           Clean commit                │
 │                /update-state     Capture decisions           │
 │                                                              │
-│  HYGIENE       /status           Check context health        │
+│  HYGIENE       /context-check    Check context health        │
 │  (Every 2h)    /clean-slate      Compress & restart          │
 │                                                              │
 │  TEST          /run-tests        Execute tests               │
