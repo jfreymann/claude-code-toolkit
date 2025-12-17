@@ -127,19 +127,40 @@ Already done if you ran `install.sh`:
 
 You mentioned Claude auto-committed on another computer. To prevent this:
 
-### 1. Install Toolkit on Other Computer
+### 1. Update Toolkit (If Already Installed)
+
+If you already have the toolkit installed:
 
 ```bash
 # On the other computer
-cd ~
-git clone https://github.com/jfreymann/claude-code-toolkit.git
-cd claude-code-toolkit
+cd ~/claude-code-toolkit
+git pull
+```
+
+### 2. Add Git Safety Rules to CLAUDE.md
+
+**If CLAUDE.md already exists** (toolkit was previously installed):
+
+```bash
+cd ~/claude-code-toolkit
+./update-safety-rules.sh
+```
+
+This migration script will:
+- Create a timestamped backup of your existing CLAUDE.md
+- Add Git Safety Rules section without losing your customizations
+- Safe to run multiple times (idempotent)
+
+**If CLAUDE.md doesn't exist** (fresh install):
+
+```bash
+cd ~/claude-code-toolkit
 ./install.sh
 ```
 
-**IMPORTANT**: The `~/.claude/CLAUDE.md` file (with Git Safety Rules) must exist for Claude Code to see the constraints.
+This creates CLAUDE.md with Git Safety Rules already included.
 
-### 2. Install Git Hook in Guardian Project
+### 3. Install Git Hook in Guardian Project
 
 ```bash
 # On the other computer, in guardian project
@@ -148,7 +169,7 @@ cp ~/claude-code-toolkit/project-templates/pre-commit-hook .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
-### 3. Verify Installation
+### 4. Verify Installation
 
 ```bash
 # Check that CLAUDE.md exists
@@ -157,6 +178,8 @@ ls -la ~/.claude/CLAUDE.md
 # Check for Git Safety Rules
 grep "Git Safety Rules" ~/.claude/CLAUDE.md
 ```
+
+**Expected output**: Should show "## Git Safety Rules" at line ~103
 
 If the file doesn't exist or doesn't have Git Safety Rules, Claude Code won't have the constraints.
 
