@@ -125,17 +125,12 @@ else
 fi
 
 # Update the Anti-patterns "Never Do" section to reference Git Safety Rules
+# Note: This is optional - the critical Git Safety Rules section is already added above
 if grep -q "^### Never Do" "$CLAUDE_FILE"; then
-    # Check if it already has the git safety reference
     if ! grep -q "Automatic git commits or pushes" "$CLAUDE_FILE"; then
-        # Add the reference after "Never Do" section starts using awk
-        awk '/^- Over-engineer before validating the approach/ {
-            print
-            print "- **Automatic git commits or pushes (see Git Safety Rules above)**"
-            next
-        }
-        { print }' "$CLAUDE_FILE" > "$CLAUDE_FILE.tmp"
-        mv "$CLAUDE_FILE.tmp" "$CLAUDE_FILE"
+        # Use perl for more reliable text insertion
+        perl -i.bak -pe 'print "- **Automatic git commits or pushes (see Git Safety Rules above)**\n" if /^- Over-engineer before validating the approach$/ && !$done++' "$CLAUDE_FILE"
+        rm -f "$CLAUDE_FILE.bak"
     fi
 fi
 
