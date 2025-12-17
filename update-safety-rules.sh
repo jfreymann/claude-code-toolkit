@@ -124,15 +124,9 @@ else
     mv "$CLAUDE_FILE.tmp" "$CLAUDE_FILE"
 fi
 
-# Update the Anti-patterns "Never Do" section to reference Git Safety Rules
-# Note: This is optional - the critical Git Safety Rules section is already added above
-if grep -q "^### Never Do" "$CLAUDE_FILE"; then
-    if ! grep -q "Automatic git commits or pushes" "$CLAUDE_FILE"; then
-        # Use perl for more reliable text insertion
-        perl -i.bak -pe 'print "- **Automatic git commits or pushes (see Git Safety Rules above)**\n" if /^- Over-engineer before validating the approach$/ && !$done++' "$CLAUDE_FILE"
-        rm -f "$CLAUDE_FILE.bak"
-    fi
-fi
+# Note: We skip updating the Anti-patterns "Never Do" section to avoid
+# shell parsing issues. The critical Git Safety Rules section has been
+# added above, which is what matters for protecting against auto-commits.
 
 echo ""
 echo -e "${GREEN}✓ Git Safety Rules added${NC}"
