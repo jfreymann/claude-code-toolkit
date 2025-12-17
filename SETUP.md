@@ -131,7 +131,7 @@ That's it! Claude now has full context about you and your project.
 ### Session Continuity
 - **Staleness detection**: Claude adapts its briefing based on how long since your last session
 - **State persistence**: Pick up exactly where you left off, even after weeks
-- **Handoff documents**: Clean session transitions with `/whats-next`
+- **Handoff documents**: Clean session transitions with `/end-session`
 
 ### Expert Agents
 Specialized agents for domain-specific work:
@@ -144,7 +144,7 @@ Specialized agents for domain-specific work:
 
 ### Workflow Commands
 - `/bootstrap` - Session initialization
-- `/whats-next` - Session handoff
+- `/end-session` - Session handoff
 - `/update-state` - Quick state updates
 - `/archive-session` - Archive completed work
 - `/create-adr` - Document decisions
@@ -308,7 +308,7 @@ Quick updates keep state accurate:
 /update-state blocker "waiting on API access"
 ```
 
-### 3. End Sessions with `/whats-next`
+### 3. End Sessions with `/end-session`
 Creates a clean handoff for future you:
 - What was accomplished
 - Where you stopped
@@ -338,7 +338,7 @@ Future you will thank present you.
 
 ### State isn't persisting between sessions
 - Ensure `docs/sessions/CURRENT.md` exists in your project
-- Check that `/whats-next` was run at end of previous session
+- Check that `/end-session` was run at end of previous session
 
 ### Agents aren't being offered
 - Verify agents exist in `~/.claude/agents/`

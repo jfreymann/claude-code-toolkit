@@ -52,9 +52,9 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │                              ▼                                   │
 │  END SESSION                                                     │
 │  ───────────                                                     │
-│  /whats-next         Save state, prepare handoff                 │
+│  /end-session         Save state, prepare handoff                │
 │       or                                                         │
-│  /whats-next --pause Quick save (lunch break)                    │
+│  /end-session --pause Quick save (lunch break)                   │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
@@ -146,9 +146,9 @@ claude
 |---------|------|--------------|
 | `/bootstrap` | Start of day, switching projects | Full context load, adaptive briefing |
 | `/resume` | Quick return (< few hours) | Lightweight "where was I?" |
-| `/whats-next` | End of session | Full handoff, save state |
-| `/whats-next --pause` | Quick break | Minimal state save |
-| `/whats-next --complete` | Task/feature done | Mark complete, suggest next steps |
+| `/end-session` | End of session | Full handoff, save state |
+| `/end-session --pause` | Quick break | Minimal state save |
+| `/end-session --complete` | Task/feature done | Mark complete, suggest next steps |
 | `/archive-session` | Major milestone done | Archive state, fresh start |
 | `/update-state` | During session | Quick state capture (decisions, blockers) |
 | `/clean-slate` | Context cluttered, stuck, 2+ hours | Compress context, restart fresh |
@@ -233,7 +233,7 @@ now adding expiry checking and refresh logic.
 ### The Flow
 
 ```
-/whats-next saves → CURRENT.md ← /bootstrap loads
+/end-session saves → CURRENT.md ← /bootstrap loads
                         ↑
               /update-state updates
 ```
@@ -366,18 +366,18 @@ claude
 /commit
 
 # Lunch break
-/whats-next --pause
+/end-session --pause
 
 # Return
 /resume
 
 # More work...
 /implement
-/pre-commit  
+/pre-commit
 /commit
 
 # End of day
-/whats-next
+/end-session
 
 # Output:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -411,7 +411,7 @@ claude-code-toolkit/
 │   ├── commands/              # Workflow commands
 │   │   ├── bootstrap.md
 │   │   ├── resume.md
-│   │   ├── whats-next.md
+│   │   ├── end-session.md
 │   │   ├── update-state.md
 │   │   ├── archive-session.md
 │   │   ├── create-plan.md
@@ -452,7 +452,7 @@ claude-code-toolkit/
 **Q: Does this work with any project type?**  
 A: Yes. The workflow is language/framework agnostic. Customize agents for your stack.
 
-**Q: What if I forget to run /whats-next?**  
+**Q: What if I forget to run /end-session?**
 A: Your work is in git. Next `/bootstrap` will detect uncommitted changes and help you reconstruct state.
 
 **Q: Can I use this with a team?**  

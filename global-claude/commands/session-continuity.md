@@ -40,7 +40,7 @@ Every session starts fresh. Claude has no memory of previous sessions. The chall
 │         │                                                    │
 │         ▼                                                    │
 │  ┌──────────────┐                                           │
-│  │ /whats-next  │ ← Capture state, prepare handoff          │
+│  │ /end-session  │ ← Capture state, prepare handoff          │
 │  └──────────────┘                                           │
 │         │                                                    │
 │         ├───────────────────┐                               │
@@ -59,9 +59,9 @@ Every session starts fresh. Claude has no memory of previous sessions. The chall
 | Start of day | `/bootstrap` | Full context load |
 | Return from short break | `/resume` | Quick refresh |
 | Mid-session state capture | `/update-state` | Periodic save |
-| End of session | `/whats-next` | Full handoff |
-| Quick pause | `/whats-next --pause` | Minimal capture |
-| Feature complete | `/whats-next --complete` | Marks done, suggests archive |
+| End of session | `/end-session` | Full handoff |
+| Quick pause | `/end-session --pause` | Minimal capture |
+| Feature complete | `/end-session --complete` | Marks done, suggests archive |
 | Major milestone done | `/archive-session` | Archive and fresh start |
 
 ## Staleness Tiers
@@ -283,7 +283,7 @@ Leave specific markers for where to resume:
 
 When context window fills up:
 
-1. **Before reset**: Run `/whats-next --pause` to capture state
+1. **Before reset**: Run `/end-session --pause` to capture state
 2. **After reset**: Run `/resume` to reload essentials
 3. **If complex**: Run full `/bootstrap`
 
@@ -641,7 +641,7 @@ If you've tried the same thing 3 times:
 ✅ **The End-of-Session Save**
 ```
 Before ending your day:
-1. /whats-next (saves full state)
+1. /end-session (saves full state)
 2. Tomorrow: /bootstrap (loads everything)
 
 Not /clean-slate - that's for mid-session compression
@@ -652,8 +652,8 @@ Not /clean-slate - that's for mid-session compression
 **Q: Won't I lose important context if I compress?**
 A: No - `/clean-slate` saves all insights, decisions, and next actions to CURRENT.md. You lose clutter, not knowledge.
 
-**Q: How is this different from /whats-next?**
-A: `/whats-next` is for ending your session. `/clean-slate` is for continuing work with fresh context. Both save state, different purposes.
+**Q: How is this different from /end-session?**
+A: `/end-session` is for ending your session. `/clean-slate` is for continuing work with fresh context. Both save state, different purposes.
 
 **Q: Should I compress every hour?**
 A: No - that's over-compressing. Every 2 hours is a good baseline. Compress more if stuck, less if flowing.
@@ -698,14 +698,14 @@ A: No - `/clean-slate` will prompt you to commit first, or use `--keep-files` to
 ```
 /create-plan → Creates plan → Links in CURRENT.md
 /update-plan → Updates plan → Syncs with CURRENT.md
-/whats-next  → Updates both CURRENT.md and plan
+/end-session  → Updates both CURRENT.md and plan
 ```
 
 ### With Git
 
 ```
 /commit      → Creates commit
-/whats-next  → Notes commits in session history
+/end-session  → Notes commits in session history
              → Warns about uncommitted changes
 ```
 
@@ -714,7 +714,7 @@ A: No - `/clean-slate` will prompt you to commit first, or use `--keep-files` to
 ```
 /pre-commit  → Run before commit
 /commit      → Clean commit
-/whats-next  → Captures final state
+/end-session  → Captures final state
              → Suggests git-workflow-manager if PR ready
 ```
 

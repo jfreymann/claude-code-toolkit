@@ -94,7 +94,7 @@ Read recent tool outputs for signs of context strain:
 ⚠️  Context is nearly full. Recommend /clean-slate soon.
 
    Finish current task, then compress:
-   1. /whats-next (save state)
+   1. /end-session (save state)
    2. /clean-slate (compress and restart)
 ```
 
@@ -109,7 +109,7 @@ Read recent tool outputs for signs of context strain:
 
    Immediate action:
    1. Save your current work
-   2. /whats-next (capture state)
+   2. /end-session (capture state)
    3. /clean-slate (compress and restart)
    4. /resume (reload with fresh context)
 ```
@@ -145,7 +145,7 @@ This command helps you DECIDE when to compress. The actual compression workflow:
 ```
 /context-check              # "Should I compress?"
    ↓ (if yellow/orange/red)
-/whats-next                 # Save state
+/end-session                 # Save state
    ↓
 /clean-slate                # Compress & restart
    ↓
