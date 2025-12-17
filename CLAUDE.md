@@ -110,7 +110,7 @@ Execute this workflow...
 ```
 
 Categories:
-- **Session lifecycle**: bootstrap.md, whats-next.md, resume.md
+- **Session lifecycle**: bootstrap.md, end-session.md, resume.md
 - **Planning**: create-plan.md, update-plan.md, run-plan.md
 - **Development**: implement.md, run-tests.md, add-tests.md, test-first.md
 - **Quality**: pre-commit.md, commit.md
@@ -211,7 +211,7 @@ The toolkit implements "living architecture" through persistent state:
 
 Session continuity flow:
 ```
-/whats-next → saves CURRENT.md
+/end-session → saves CURRENT.md
                      ↓
               (time passes)
                      ↓

@@ -184,7 +184,7 @@ Keep Session History trimmed to last 10-15 entries. Older entries are summarized
 /update-state note "Refactor the error handling in validator after feature complete"
 
 # End session
-/whats-next
+/end-session
 ```
 
 ---
@@ -198,7 +198,7 @@ Keep Session History trimmed to last 10-15 entries. Older entries are summarized
     ↓
 /update-state → Periodic state capture (mid-session)
     ↓
-/whats-next   → End session with full handoff
+/end-session   → End session with full handoff
 ```
 
 ### Frequency
@@ -226,14 +226,14 @@ After committing:
 /update-state sync               # Updates CURRENT.md with commit info
 ```
 
-Or let `/whats-next` capture commits at session end.
+Or let `/end-session` capture commits at session end.
 
-### Why Not Just /whats-next?
+### Why Not Just /end-session?
 
 | Command | Purpose | When |
 |---------|---------|------|
 | `/update-state` | Quick state capture | During work |
-| `/whats-next` | Full handoff | End of session |
+| `/end-session` | Full handoff | End of session |
 
 `/update-state` is lightweight - just update one thing and continue working.
-`/whats-next` is comprehensive - summarize session, prepare for resumption.
+`/end-session` is comprehensive - summarize session, prepare for resumption.

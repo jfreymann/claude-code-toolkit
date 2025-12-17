@@ -254,7 +254,7 @@ Then restart Claude Code and run:
 Going to lunch?
 
 ```
-/whats-next --pause
+/end-session --pause
 ```
 
 Quick state save. When you return:
@@ -268,7 +268,7 @@ Lightweight "where was I?" - no full ceremony.
 ### 3.6 Ending Your Day
 
 ```
-/whats-next
+/end-session
 ```
 
 Claude:
@@ -480,8 +480,8 @@ When you need guidance on approach:
 │  REVIEW        /review           Self-review                 │
 │                /security-review  Security focus              │
 │                                                              │
-│  END           /whats-next       Full handoff                │
-│                /whats-next --pause  Quick break              │
+│  END           /end-session       Full handoff                │
+│                /end-session --pause  Quick break              │
 │                                                              │
 │  FINISH        /archive-session  Feature complete            │
 │                                                              │
@@ -492,7 +492,7 @@ When you need guidance on approach:
 
 ## The Golden Rule
 
-**Always end with `/whats-next`.** 
+**Always end with `/end-session`.** 
 
 This single habit ensures:
 - ✅ State is saved
@@ -500,7 +500,7 @@ This single habit ensures:
 - ✅ Decisions are recorded
 - ✅ Nothing is lost
 
-Even if you forget, `/bootstrap` will detect uncommitted work and help you reconstruct - but the clean path is always `/whats-next`.
+Even if you forget, `/bootstrap` will detect uncommitted work and help you reconstruct - but the clean path is always `/end-session`.
 
 ---
 
@@ -523,7 +523,7 @@ claude
 /pre-commit  
 /commit
 
-/whats-next                   # End of day
+/end-session                   # End of day
 
 
 # === DAY 2: Continue ===
@@ -542,7 +542,7 @@ claude
 /pre-commit
 /commit
 
-/whats-next
+/end-session
 
 
 # === DAY 3: Finish ===
@@ -564,7 +564,7 @@ claude
 "Help me prepare this branch for PR"
                               # git-workflow-manager handles it
 
-/whats-next --complete        # Feature done!
+/end-session --complete        # Feature done!
 
 # After PR merges
 /archive-session              # Clean slate for next feature

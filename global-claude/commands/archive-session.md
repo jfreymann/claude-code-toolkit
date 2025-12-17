@@ -158,7 +158,7 @@ Output:
 ┌─────────────────────────────────────────────────────────────┐
 │  FEATURE WORK                                                │
 │                                                              │
-│  /bootstrap → work → /whats-next                            │
+│  /bootstrap → work → /end-session                            │
 │       ↑                   │                                  │
 │       └───────────────────┘                                  │
 │           (repeat across sessions)                           │
@@ -185,15 +185,15 @@ Output:
 | User says "done" / "finished" | ✓ Yes |
 | Starting completely new work | ✓ Yes |
 | CURRENT.md getting very long | ✓ Yes |
-| Just pausing for a few days | ✗ No, use `/whats-next` |
+| Just pausing for a few days | ✗ No, use `/end-session` |
 | Switching to different task in same project | ✗ No |
 
-### With /whats-next
+### With /end-session
 
-`/whats-next --complete` suggests archiving when appropriate:
+`/end-session --complete` suggests archiving when appropriate:
 
 ```
-/whats-next --complete
+/end-session --complete
     │
     ├─ All tasks done? → "Ready to archive?"
     │                         │
@@ -208,7 +208,7 @@ Output:
 Typical completion flow:
 
 ```
-1. /whats-next --complete     → Marks feature done
+1. /end-session --complete     → Marks feature done
 2. git-workflow-manager       → Prepare branch, push, create PR
 3. (PR merged)
 4. /archive-session           → Archive and fresh start

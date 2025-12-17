@@ -182,7 +182,7 @@ Include `argument-hint: [description]` in frontmatter and reference `$ARGUMENTS`
 **Self-contained procedures:**
 - `/check-todos` - Operates on known file (TO-DOS.md)
 - `/first-principles` - Operates on current conversation
-- `/whats-next` - Analyzes current context
+- `/end-session` - Analyzes current context
 
 **Pattern:** Task operates on implicit context (current conversation, known files, project state)
 

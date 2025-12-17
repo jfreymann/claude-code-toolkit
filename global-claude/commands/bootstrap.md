@@ -319,7 +319,7 @@ mv docs/sessions/CURRENT.md "docs/sessions/archive/$(date +%Y-%m-%d-%H%M%S)-{fea
 ### Session Lifecycle
 
 ```
-/bootstrap (start) → work → /whats-next (end)
+/bootstrap (start) → work → /end-session (end)
                   ↑                    │
                   └────────────────────┘
                      Next session
@@ -337,12 +337,12 @@ mv docs/sessions/CURRENT.md "docs/sessions/archive/$(date +%Y-%m-%d-%H%M%S)-{fea
 | Output | Adaptive by tier | Always compact |
 | State update | Adds session start entry | No update |
 
-### With /whats-next
+### With /end-session
 
-State saved by `/whats-next` is loaded by `/bootstrap`:
+State saved by `/end-session` is loaded by `/bootstrap`:
 
 ```
-/whats-next saves:          /bootstrap loads:
+/end-session saves:          /bootstrap loads:
 ├─ Quick Reference    →     ├─ Quick Reference
 ├─ What's Happening   →     ├─ What's Happening  
 ├─ Next Actions       →     ├─ Next Actions
@@ -362,9 +362,9 @@ If `docs/plans/ACTIVE.md` exists:
 ```
 Morning:   /bootstrap         → Full context load
            work...
-Lunch:     /whats-next --pause → Quick state save
+Lunch:     /end-session --pause → Quick state save
            break
 Return:    /resume            → Quick refresh
            work...
-End of day: /whats-next       → Full handoff
+End of day: /end-session       → Full handoff
 ```

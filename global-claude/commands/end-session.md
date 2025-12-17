@@ -1,9 +1,9 @@
 ---
-name: whats-next
+name: end-session
 description: Session handoff with state capture. Updates CURRENT.md and prepares for seamless resumption.
 ---
 
-# What's Next - Session Handoff
+# End Session - Session Handoff
 
 Capture session state and prepare handoff for future resumption. Updates `docs/sessions/CURRENT.md` with everything needed to continue seamlessly.
 
@@ -17,11 +17,11 @@ Capture session state and prepare handoff for future resumption. Updates `docs/s
 
 ## When to Use
 
-- **End of work session** → `/whats-next`
-- **Quick break (lunch, meeting)** → `/whats-next --pause`
-- **Completed a task/feature** → `/whats-next --complete`
-- **Before switching projects** → `/whats-next`
-- **Context window getting full** → `/whats-next --pause`
+- **End of work session** → `/end-session`
+- **Quick break (lunch, meeting)** → `/end-session --pause`
+- **Completed a task/feature** → `/end-session --complete`
+- **Before switching projects** → `/end-session`
+- **Context window getting full** → `/end-session --pause`
 
 ---
 
@@ -289,13 +289,13 @@ If feature complete and ready for PR:
 ### With /resume
 State saved here is what `/resume` loads:
 ```
-/whats-next saves → CURRENT.md ← /resume loads
+/end-session saves → CURRENT.md ← /resume loads
 ```
 
 ### With /archive-session
 When work truly complete:
 ```
-/whats-next --complete → suggests → /archive-session
+/end-session --complete → suggests → /archive-session
 ```
 
 ---
@@ -303,8 +303,8 @@ When work truly complete:
 ## Usage
 
 ```bash
-/whats-next              # Full session handoff
-/whats-next --pause      # Quick pause, minimal update
-/whats-next --complete   # Task/feature finished
-/whats-next --quick      # Update state, minimal output
+/end-session              # Full session handoff
+/end-session --pause      # Quick pause, minimal update
+/end-session --complete   # Task/feature finished
+/end-session --quick      # Update state, minimal output
 ```

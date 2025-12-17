@@ -106,7 +106,7 @@ Example: "This looks like database-specific work - should I delegate to postgres
 <!-- These are the commands from this toolkit - no customization needed -->
 ### Session Lifecycle
 - `/bootstrap` - Initialize session, load context, recover state
-- `/whats-next` - End session, generate handoff
+- `/end-session` - End session, generate handoff
 - `/archive-session` - Archive state when major feature completes
 - `/clean-slate` - Compress context and restart fresh (use every 2 hours or when stuck)
 - `/context-check` - Quick context health assessment

@@ -29,7 +29,7 @@ Compress current context, save state, and restart with a fresh session. Use when
 - Just started session (< 30 min)
 - Making steady progress on current task
 - In the middle of active implementation (finish your thought first)
-- About to end session anyway (use `/whats-next` instead)
+- About to end session anyway (use `/end-session` instead)
 
 ## What It Does
 
@@ -375,8 +375,8 @@ If you notice these, run `/clean-slate`:
 **Q: Won't I lose important context?**
 A: No. `/clean-slate` saves all key decisions, dead ends, and next actions to CURRENT.md. You lose the *clutter*, not the *insights*.
 
-**Q: How is this different from /whats-next?**
-A: `/whats-next` is for ending your session (going offline). `/clean-slate` is for continuing work in a fresh context (staying online, just restarting).
+**Q: How is this different from /end-session?**
+A: `/end-session` is for ending your session (going offline). `/clean-slate` is for continuing work in a fresh context (staying online, just restarting).
 
 **Q: Should I commit first?**
 A: Usually yes. `/clean-slate` will prompt you if you have uncommitted changes. Clean git state makes restart clearer.

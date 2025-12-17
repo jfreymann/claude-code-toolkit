@@ -77,7 +77,7 @@ claude
 │   └── code-reviewer.md
 ├── commands/                     # Workflow commands
 │   ├── bootstrap.md              # Session init
-│   ├── whats-next.md             # Session end
+│   ├── end-session.md             # Session end
 │   ├── archive-session.md        # Archive completed work
 │   ├── update-state.md           # Quick state updates
 │   ├── create-adr.md             # Architecture decisions
@@ -128,7 +128,7 @@ Real-world examples showing populated files:
 │  └── Ask Claude to delegate to agents when needed               │
 │                                                                 │
 │  SESSION END                                                    │
-│  └── /whats-next                                                │
+│  └── /end-session                                                │
 │      └── Updates CURRENT.md with handoff info                   │
 │                                                                 │
 │  MAJOR FEATURE COMPLETE                                         │
