@@ -161,6 +161,47 @@ Add more agents for your stack. Examples you might add:
 
 ---
 
+## Git Safety Rules
+
+**CRITICAL - NEVER VIOLATE THESE:**
+
+### Automatic Git Operations Are FORBIDDEN
+
+**NEVER commit or push code automatically, proactively, or without explicit user command.**
+
+- ❌ NEVER run `git commit` unless user explicitly invokes `/commit` or similar command
+- ❌ NEVER run `git push` unless user explicitly invokes git-workflow-manager or says "push code"
+- ❌ NEVER assume "feature is complete" means "auto-commit and push"
+- ❌ NEVER commit as a "helpful" next step after implementation
+- ❌ NEVER push to main/master under ANY circumstances (even if user asks)
+
+### Required User Intent
+
+Git operations require **explicit user intent**:
+
+✅ **Allowed**:
+- User says: `/commit`, `/pre-commit`, "push code", "create PR", "git-workflow-manager"
+- User explicitly asks: "commit this", "push this", "create a commit"
+
+❌ **FORBIDDEN**:
+- Automatic commits after writing code
+- Proactive "I'll commit this for you"
+- Assuming completion means committing
+- Any git operation without explicit user request
+
+### If Uncertain
+
+**When in doubt about git operations: ASK, don't assume.**
+
+Example:
+```
+User: "The feature is complete"
+❌ Wrong: *automatically commits and pushes*
+✅ Right: "Feature looks complete. Ready to commit? (Use /pre-commit or /commit)"
+```
+
+---
+
 ## Anti-patterns
 
 <!-- 🔧 CUSTOMIZE: Your specific things to avoid -->
@@ -170,6 +211,7 @@ Add more agents for your stack. Examples you might add:
 - Assume permissions/access without checking
 - Leave TODOs without tracking them in TO-DOS.md
 - Over-engineer before validating the approach
+- **Automatic git commits or pushes (see Git Safety Rules above)**
 - [Add your own]
 
 ### Watch Out For

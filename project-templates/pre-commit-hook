@@ -1,0 +1,46 @@
+#!/bin/bash
+# Claude Code Toolkit - Git Safety Hook
+# This hook prevents automatic commits to main/master branches
+# Install: cp project-templates/pre-commit-hook .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+set -e
+
+# Get current branch
+current_branch=$(git branch --show-current)
+
+# Get main branch name (fallback to "main")
+main_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+
+# Protected branches
+if [[ "$current_branch" == "main" || "$current_branch" == "master" || "$current_branch" == "$main_branch" ]]; then
+    cat <<EOF
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  COMMIT BLOCKED: Protected Branch
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You are attempting to commit directly to: $current_branch
+
+This is a protected branch. All work should be done on feature branches.
+
+To commit this work:
+  git checkout -b feature/your-feature-name
+  git commit
+
+Or use Claude Code toolkit commands:
+  /commit              # Includes branch safety checks
+  /pre-commit          # Pre-commit quality checks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+To bypass this hook (NOT recommended):
+  git commit --no-verify
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+    exit 1
+fi
+
+# If we get here, commit is allowed
+exit 0
