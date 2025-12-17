@@ -4,6 +4,10 @@
 
 set -e
 
+# Get script directory to locate project-templates/
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SAFETY_RULES_FILE="$SCRIPT_DIR/project-templates/git-safety-rules.txt"
+
 CLAUDE_FILE="$HOME/.claude/CLAUDE.md"
 BACKUP_FILE="$HOME/.claude/CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
 
@@ -23,6 +27,14 @@ if [[ ! -f "$CLAUDE_FILE" ]]; then
     echo -e "${RED}✗ Error: $CLAUDE_FILE not found${NC}"
     echo ""
     echo "Run ./install.sh first to create the file."
+    exit 1
+fi
+
+# Check if safety rules file exists
+if [[ ! -f "$SAFETY_RULES_FILE" ]]; then
+    echo -e "${RED}✗ Error: $SAFETY_RULES_FILE not found${NC}"
+    echo ""
+    echo "Make sure you're running this script from the claude-code-toolkit directory."
     exit 1
 fi
 
@@ -58,53 +70,6 @@ echo "Creating backup..."
 cp "$CLAUDE_FILE" "$BACKUP_FILE"
 echo -e "${GREEN}✓ Backup created: $BACKUP_FILE${NC}"
 
-# Create the Git Safety Rules section
-SAFETY_RULES=$(cat <<'RULES'
-
----
-
-## Git Safety Rules
-
-**CRITICAL - NEVER VIOLATE THESE:**
-
-### Automatic Git Operations Are FORBIDDEN
-
-**NEVER commit or push code automatically, proactively, or without explicit user command.**
-
-- ❌ NEVER run `git commit` unless user explicitly invokes `/commit` or similar command
-- ❌ NEVER run `git push` unless user explicitly invokes git-workflow-manager or says "push code"
-- ❌ NEVER assume "feature is complete" means "auto-commit and push"
-- ❌ NEVER commit as a "helpful" next step after implementation
-- ❌ NEVER push to main/master under ANY circumstances (even if user asks)
-
-### Required User Intent
-
-Git operations require **explicit user intent**:
-
-✅ **Allowed**:
-- User says: `/commit`, `/pre-commit`, "push code", "create PR", "git-workflow-manager"
-- User explicitly asks: "commit this", "push this", "create a commit"
-
-❌ **FORBIDDEN**:
-- Automatic commits after writing code
-- Proactive "I'll commit this for you"
-- Assuming completion means committing
-- Any git operation without explicit user request
-
-### If Uncertain
-
-**When in doubt about git operations: ASK, don't assume.**
-
-Example:
-```
-User: "The feature is complete"
-❌ Wrong: *automatically commits and pushes*
-✅ Right: "Feature looks complete. Ready to commit? (Use /pre-commit or /commit)"
-```
-
-RULES
-)
-
 # Find the line number of "## Anti-patterns"
 ANTI_PATTERNS_LINE=$(grep -n "^## Anti-patterns" "$CLAUDE_FILE" | head -1 | cut -d: -f1)
 
@@ -112,12 +77,12 @@ if [[ -z "$ANTI_PATTERNS_LINE" ]]; then
     # If no Anti-patterns section, append to end
     echo ""
     echo "Note: No Anti-patterns section found. Appending to end of file."
-    echo "$SAFETY_RULES" >> "$CLAUDE_FILE"
+    cat "$SAFETY_RULES_FILE" >> "$CLAUDE_FILE"
 else
     # Insert before Anti-patterns section using head/tail
-    # This avoids all the quoting issues with awk/sed/perl
+    # This avoids all shell parsing issues by working with files directly
     head -n $((ANTI_PATTERNS_LINE - 1)) "$CLAUDE_FILE" > "$CLAUDE_FILE.tmp"
-    echo "$SAFETY_RULES" >> "$CLAUDE_FILE.tmp"
+    cat "$SAFETY_RULES_FILE" >> "$CLAUDE_FILE.tmp"
     tail -n +$ANTI_PATTERNS_LINE "$CLAUDE_FILE" >> "$CLAUDE_FILE.tmp"
     mv "$CLAUDE_FILE.tmp" "$CLAUDE_FILE"
 fi
