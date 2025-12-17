@@ -114,13 +114,11 @@ if [[ -z "$ANTI_PATTERNS_LINE" ]]; then
     echo "Note: No Anti-patterns section found. Appending to end of file."
     echo "$SAFETY_RULES" >> "$CLAUDE_FILE"
 else
-    # Insert before Anti-patterns section
-    # Use awk to insert the content before the specified line
-    awk -v line="$ANTI_PATTERNS_LINE" -v content="$SAFETY_RULES" '
-        NR == line { print content }
-        { print }
-    ' "$CLAUDE_FILE" > "$CLAUDE_FILE.tmp"
-
+    # Insert before Anti-patterns section using head/tail
+    # This avoids all the quoting issues with awk/sed/perl
+    head -n $((ANTI_PATTERNS_LINE - 1)) "$CLAUDE_FILE" > "$CLAUDE_FILE.tmp"
+    echo "$SAFETY_RULES" >> "$CLAUDE_FILE.tmp"
+    tail -n +$ANTI_PATTERNS_LINE "$CLAUDE_FILE" >> "$CLAUDE_FILE.tmp"
     mv "$CLAUDE_FILE.tmp" "$CLAUDE_FILE"
 fi
 
