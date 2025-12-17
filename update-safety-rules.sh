@@ -128,10 +128,14 @@ fi
 if grep -q "^### Never Do" "$CLAUDE_FILE"; then
     # Check if it already has the git safety reference
     if ! grep -q "Automatic git commits or pushes" "$CLAUDE_FILE"; then
-        # Add the reference after "Never Do" section starts
-        sed -i.sedbackup '/^- Over-engineer before validating the approach/a\
-- **Automatic git commits or pushes (see Git Safety Rules above)**' "$CLAUDE_FILE"
-        rm -f "$CLAUDE_FILE.sedbackup"
+        # Add the reference after "Never Do" section starts using awk
+        awk '/^- Over-engineer before validating the approach/ {
+            print
+            print "- **Automatic git commits or pushes (see Git Safety Rules above)**"
+            next
+        }
+        { print }' "$CLAUDE_FILE" > "$CLAUDE_FILE.tmp"
+        mv "$CLAUDE_FILE.tmp" "$CLAUDE_FILE"
     fi
 fi
 
