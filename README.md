@@ -35,11 +35,13 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │                                                                  │
 │  /implement          Work on current task                        │
 │       ↓                                                          │
-│  /pre-commit         Quality checks (lint, tests)                │
+│  /update-state       Capture decisions, progress (do this!)      │
 │       ↓                                                          │
-│  /commit             Clean commit with good message              │
+│  /pre-commit         Quality checks (lint, tests, branch safety) │
 │       ↓                                                          │
-│  /update-state       Capture decisions, progress (optional)      │
+│  /commit             Clean commit (auto-creates branch if needed)│
+│                                                                  │
+│  💡 CURRENT.md persists - keeps context across many sessions     │
 │                                                                  │
 │  ┌────────────────────────────────────────────────────┐          │
 │  │  CONTEXT HYGIENE (Every 2 hours or when stuck)     │          │
@@ -52,22 +54,28 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │                              ▼                                   │
 │  END SESSION                                                     │
 │  ───────────                                                     │
-│  /end-session         Save state, prepare handoff                │
+│  /end-session         Save state (CURRENT.md persists!)          │
 │       or                                                         │
 │  /end-session --pause Quick save (lunch break)                   │
+│                                                                  │
+│  💡 CURRENT.md persists for next /bootstrap                      │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
 │  READY FOR PUSH? ────────────────────────────────────────────────│
 │                                                                  │
-│  git-workflow-manager     Prepare branch for PR                  │
-│                           (rebase, squash, push, create PR)      │
+│  "push code"              Triggers git-workflow-manager          │
+│                           (branch, push, create PR, cleanup)     │
+│                                                                  │
+│  After PR merged: /update-state to capture completion            │
+│                   (CURRENT.md still persists!)                   │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
-│  FEATURE COMPLETE? ──────────────────────────────────────────────│
+│  MAJOR MILESTONE? (weeks of work, 10+ PRs) ──────────────────────│
 │                                                                  │
-│  /archive-session    Archive state, start fresh                  │
+│  /archive-session    Archive CURRENT.md, start completely fresh  │
+│                      (RARE - only for major milestones!)         │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -146,11 +154,11 @@ claude
 |---------|------|--------------|
 | `/bootstrap` | Start of day, switching projects | Full context load, adaptive briefing |
 | `/resume` | Quick return (< few hours) | Lightweight "where was I?" |
-| `/end-session` | End of session | Full handoff, save state |
-| `/end-session --pause` | Quick break | Minimal state save |
+| `/update-state` | **During work** (important!) | Capture decisions/progress as you work |
+| `/end-session` | End of session | Full handoff, save state (CURRENT.md persists) |
+| `/end-session --pause` | Quick break | Minimal state save (checks staleness) |
 | `/end-session --complete` | Task/feature done | Mark complete, suggest next steps |
-| `/archive-session` | Major milestone done | Archive state, fresh start |
-| `/update-state` | During session | Quick state capture (decisions, blockers) |
+| `/archive-session` | **Major milestone** (rare!) | Archive CURRENT.md, start fresh (10+ sessions) |
 | `/clean-slate` | Context cluttered, stuck, 2+ hours | Compress context, restart fresh |
 | `/context-check` | Periodic check | Quick **context health** assessment |
 
@@ -167,13 +175,15 @@ claude
 |---------|------|--------------|
 | `/implement` | Working on a task | Structured implementation workflow |
 | `/pre-commit` | Before committing | Lint, tests, security checks, **branch safety** |
-| `/commit` | After pre-commit | Clean commit with good message, **branch safety** |
+| `/commit` | Ready to commit | **Auto-creates branch** if on main, clean commit |
 | `/run-tests` | Anytime | Execute and interpret tests |
 | `/add-tests` | After implementation | Add tests to working code |
 | `/test-first` | When spec is clear | TDD workflow |
 | `/fix-test` | Tests failing | Debug and fix tests |
 
-**Note:** `/pre-commit` and `/commit` include branch safety checks - they'll never let you commit to main/master. If you're on a protected branch, they'll prompt you to create a feature branch first.
+**Branch Safety:** `/commit` automatically creates a feature branch if you're on main/master. It uses CURRENT.md context to suggest a smart branch name (e.g., "feature/workflow-improvements"). You can accept the suggestion or provide your own.
+
+**State Management:** `/update-state` captures decisions and progress during work. `/end-session` checks if CURRENT.md is stale (> 1 hour old) and prompts you to update first. This keeps context rich for next `/bootstrap`.
 
 ### Quality & Review
 

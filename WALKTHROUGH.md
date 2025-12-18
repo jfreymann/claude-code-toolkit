@@ -156,42 +156,73 @@ Work through it:
 
 ### 3.3 The Commit Cycle
 
-After implementing:
+The correct flow is: **work → capture → commit**
+
+#### Step 1: Capture Your Work
+
+After implementing, capture decisions and progress:
+
+```
+/update-state
+```
+
+This updates CURRENT.md with:
+- What you just did
+- Decisions made
+- Questions that came up
+- What's next
+
+**Why this matters:** Keeps CURRENT.md fresh so next `/bootstrap` has full context.
+
+#### Step 2: Pre-commit Checks
 
 ```
 /pre-commit
 ```
 
 Claude runs:
-- **Branch safety check** (never commit to main/master)
 - Linting (auto-fixes what it can)
 - Tests (affected files or full suite)
 - Security checks (if touching sensitive code)
 
-If you're on main/master, Claude prompts:
-```
-⚠️  PROTECTED BRANCH: main
-
-You're about to commit to a protected branch.
-For safety, commits should be made on feature branches.
-
-→ Create feature branch now? [Y/n]
-Branch name: [feature/descriptive-name]
-```
-
-If everything passes:
+#### Step 3: Commit
 
 ```
 /commit
 ```
 
 Claude:
-- **Checks branch safety** (creates feature branch if needed)
+- **Checks branch safety** - if you're on main/master, it:
+  - Reads CURRENT.md "What's Happening" for context
+  - Suggests smart branch name (e.g., "feature/workflow-improvements")
+  - Auto-creates the branch
+  - Switches to it
 - Stages appropriate files
 - Writes a good commit message (conventional format)
-- Commits
+- Commits to the feature branch
 
-**Repeat this cycle:** `/implement` → `/pre-commit` → `/commit`
+Example branch safety in action:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ⚠️  BRANCH SAFETY CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ You're on: main (protected branch)
+
+ Based on your work:
+ • Context: "Add user authentication"
+ • Modified: app/models/user.rb, controllers/auth_controller.rb
+
+ Suggested branch: feature/user-authentication
+
+ Options:
+  1. Create feature/user-authentication (Recommended)
+  2. Specify different branch name
+  3. Use git-workflow-manager instead
+  4. Cancel
+```
+
+**Repeat this cycle:** `/implement` → `/update-state` → `/commit`
 
 ### 3.4 Context Hygiene (Important!)
 
@@ -267,20 +298,22 @@ Lightweight "where was I?" - no full ceremony.
 
 ### 3.6 Ending Your Day
 
+**Important:** If you haven't run `/update-state` recently, do that first!
+
 ```
 /end-session
 ```
 
 Claude:
-1. Summarizes what you accomplished
-2. Notes any uncommitted work
-3. Records current state
-4. Identifies next priorities
-5. Saves everything to CURRENT.md
+1. **Checks CURRENT.md freshness** - if it's > 1 hour old, prompts you to run `/update-state` first
+2. Summarizes what you accomplished
+3. Notes any uncommitted work
+4. Records current state
+5. Updates CURRENT.md with session end entry
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SESSION HANDOFF COMPLETE
+ SESSION HANDOFF
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 THIS SESSION
@@ -296,9 +329,88 @@ NEXT SESSION
 → Implement OCSP fallback (stretch goal)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 💡 CURRENT.md has been updated and will persist
+ 💡 No need to archive - ongoing work continues
 ```
 
-**Tomorrow's `/bootstrap` picks up exactly here.**
+**Key Point:** CURRENT.md persists! Tomorrow's `/bootstrap` picks up exactly here.
+
+**You don't archive** after every session - only after major milestones (see below).
+
+---
+
+## Part 3.7: Understanding CURRENT.md Persistence (Critical!)
+
+**The key insight that prevents workflow confusion:**
+
+### CURRENT.md Persists Across Many Sessions
+
+```
+Day 1:  Work → /update-state → /end-session
+              ↓
+        CURRENT.md saved ✓
+
+Day 2:  /bootstrap → reads CURRENT.md
+        Work → /update-state → /end-session
+              ↓
+        CURRENT.md updated ✓
+
+Day 3:  /bootstrap → reads CURRENT.md
+        Work → "push code" → PR created
+        /update-state → note PR created
+        /end-session
+              ↓
+        CURRENT.md still there! ✓
+
+Week later: PR merged
+        /update-state → note PR merged
+        /end-session
+              ↓
+        CURRENT.md STILL there! ✓
+
+Weeks later: 10+ PRs merged, entire feature done
+        /archive-session
+              ↓
+        NOW CURRENT.md moves to archive
+        Fresh CURRENT.md created
+```
+
+### Archive is RARE, Not Routine
+
+| Frequency | Action | CURRENT.md State |
+|-----------|--------|------------------|
+| **Daily** | /end-session | Persists ✓ |
+| **After PR merge** | /update-state + /end-session | Persists ✓ |
+| **Major milestone** (rare!) | /archive-session | Archived, starts fresh |
+
+### The Flow You Should Use
+
+**Daily work:**
+1. `/bootstrap` - loads CURRENT.md
+2. Work on feature
+3. `/update-state` - capture progress
+4. `/commit` - commit to feature branch
+5. `/end-session` - save state
+6. **CURRENT.md persists**
+7. Next day: `/bootstrap` - loads same CURRENT.md
+
+**Ready to push:**
+1. "push code" - triggers git-workflow-manager
+2. PR created
+3. `/update-state` - note PR created
+4. `/end-session` - save state
+5. **CURRENT.md persists**
+
+**After PR merged:**
+1. `/update-state` - note PR merged, what's next
+2. `/end-session` - save state
+3. **CURRENT.md persists**
+4. Continue working on next task
+
+**After MAJOR milestone (10+ sessions, weeks of work):**
+1. `/archive-session` - archives CURRENT.md
+2. Fresh CURRENT.md created
+3. Start next major feature
 
 ---
 
@@ -326,51 +438,94 @@ Claude checks:
 
 For auth, data handling, or sensitive code.
 
-### 4.3 Branch Preparation
+### 4.3 Push and Create PR
 
-Ask Claude to engage the git-workflow-manager:
+When ready to push and create PR, just say:
 
 ```
-"Can you help me prepare this branch for PR?"
+"push code"
 ```
 
-The agent handles:
+This automatically triggers git-workflow-manager which handles:
+- Creating feature branch (if you're on main)
 - Fetching latest main
 - Rebasing your branch
 - Resolving conflicts
-- Squashing WIP commits
-- Pushing with `--force-with-lease`
+- Pushing
+- Creating pull request
+- Post-merge cleanup (when PR merges)
 
-### 4.4 Feature Complete
+### 4.4 After PR Merges
 
-After PR merges:
+**DO NOT archive!** Just update state:
+
+```
+/update-state
+```
+
+Capture that the PR merged and you're moving to next task.
+
+```
+/end-session
+```
+
+**CURRENT.md persists** - you'll continue working in the same session context.
+
+### 4.5 Major Milestone Complete (RARE)
+
+Only use `/archive-session` when **ALL** these are true:
+- ✅ Multiple PRs merged (10+)
+- ✅ Weeks of work complete
+- ✅ Entire feature/system done (e.g., "entire auth system complete")
+- ✅ CURRENT.md has 10+ session history entries
+- ✅ Starting completely new project area
+
+**Example of when to archive:**
+- "All 15 PRs for authentication system merged"
+- "Migration from Rails 6 to 7 complete (8 weeks, 20+ PRs)"
+- "Entire API redesign shipped to production"
+
+**Example of when NOT to archive:**
+- "Login feature PR merged" ← just use /update-state
+- "Fixed the auth bug" ← just use /update-state
+- "Completed task 3 of 10" ← just use /end-session
+
+When you do archive:
 
 ```
 /archive-session
 ```
 
-Claude:
-- Archives current session state
-- Clears CURRENT.md for fresh start
-- Optionally generates changelog entry
+Claude will:
+- Run pre-flight checks (session count, recency)
+- Show clear warning
+- Ask for confirmation
+- Only proceed if truly a major milestone
 
 ---
 
 ## Part 5: Special Situations
 
-### 5.1 Mid-Session State Capture
+### 5.1 Mid-Session State Capture (Important!)
 
-Made an important decision? Hit a blocker?
-
-```
-/update-state decision "Using Redis for session storage - PostgreSQL overhead too high for this use case"
-```
+**Do this regularly!** Made progress? Made a decision? Hit a blocker?
 
 ```
-/update-state blocker "Waiting on DevOps for Redis credentials"
+/update-state
 ```
 
-These get saved to CURRENT.md immediately.
+Claude will:
+- Review recent conversation
+- Extract key decisions, progress, questions
+- Update CURRENT.md sections
+- Ensure next /bootstrap has full context
+
+**Best practice:** Run `/update-state` every 30-60 minutes during active work.
+
+**Why this matters:**
+- `/end-session` checks if CURRENT.md is stale
+- If > 1 hour old, it prompts you to update first
+- Fresh state = rich context for next /bootstrap
 
 ### 5.2 Debugging Failing Tests
 
