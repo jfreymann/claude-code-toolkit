@@ -23,14 +23,20 @@ Create well-formatted commits with optional quality checks. Integrates with sess
 
 | Situation | Use |
 |-----------|-----|
-| Simple commit, clean branch | `/commit` ✓ |
+| **Quick local commit** | `/commit` ✓ |
+| **Currently on main** | `/commit` ✓ (auto-creates branch) |
 | Amend last commit (not pushed) | `/commit --amend` ✓ |
 | Create fixup for later squash | `/commit --fixup` ✓ |
+| **Ready to push + create PR** | `git-workflow-manager` or "push code" |
 | Need to rebase first | `git-workflow-manager` |
 | Merge conflicts present | `git-workflow-manager` |
 | Force push required | `git-workflow-manager` |
 | History rewriting | `git-workflow-manager` |
-| Preparing branch for PR/push | `git-workflow-manager` |
+| Post-merge branch cleanup | `git-workflow-manager` (auto-triggered) |
+
+**Key difference:**
+- **`/commit`**: Local branch safety + commit (doesn't push)
+- **`git-workflow-manager`**: Branch + commit + push + PR (full workflow)
 
 ---
 
@@ -48,56 +54,125 @@ main_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^re
 # Check if on protected branch
 if [[ "$current_branch" == "main" || "$current_branch" == "master" || "$current_branch" == "$main_branch" ]]; then
   # Protected branch detected - must create feature branch
-  exit with error
+  # Display warning and generate smart branch name suggestion
 fi
 ```
 
+**If on protected branch (main/master), display:**
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️  PROTECTED BRANCH: $current_branch
+ ⚠️  BRANCH SAFETY CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-You're about to commit to a protected branch.
+ You're on: main (protected branch)
 
-For safety, commits should be made on feature branches.
+ Commits require a feature branch for safety.
+
+ Based on your work:
+ • Context: "Improving workflow UX"
+ • Modified: commands/archive-session.md, commands/end-session.md
+
+ Suggested branch: feature/workflow-ux-improvements
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-→ Create feature branch now? [Y/n]
 ```
 
-If **yes**:
-```
-Branch name: [feature/descriptive-name] _
+**Generate smart branch name suggestion:**
 
-→ Use suggested name or type your own:
-```
+1. **Check CURRENT.md "What's Happening"** - Use this for context
+   ```bash
+   # Extract from CURRENT.md if exists
+   what_happening=$(grep -A 1 "## What's Happening" docs/sessions/CURRENT.md | tail -1)
+   ```
 
-Generate suggestion based on:
-- Staged file paths (first changed file/directory)
-- Recent commit message style
-- Common patterns (feat/, fix/, refactor/, etc.)
+2. **Infer type from changed files:**
+   ```
+   Files changed              → Inferred type
+   ─────────────────────────────────────────
+   app/models/*.rb            → feature/
+   spec/**/*_spec.rb          → test/
+   app/services/*.rb          → feature/
+   config/**                  → chore/
+   *.md (docs only)           → docs/
+   Rakefile, Gemfile, *.gemspec → chore/
+   lib/**/bug_fix.rb          → bugfix/
+   ```
 
-Then:
+3. **Slugify context into branch name:**
+   ```
+   "Improving workflow UX" → "workflow-ux-improvements"
+   "Add user authentication" → "user-authentication"
+   "Fix login bug" → "login-bug"
+   ```
+
+4. **Combine: `{type}/{slug}`**
+   ```
+   feature/workflow-ux-improvements
+   bugfix/login-issue
+   docs/update-readme
+   ```
+
+**Then ask with AskUserQuestion:**
+
+- **Question**: "Create feature branch before committing?"
+- **Options**:
+  1. **"Create feature/{suggested-name} (Recommended)"** - Description: "Create branch and commit to it"
+  2. **"Specify different branch name"** - Description: "I'll provide a custom branch name"
+  3. **"Use git-workflow-manager instead"** - Description: "Full push workflow (branch + commit + push + PR)"
+  4. **"Cancel - I'll create branch manually"** - Description: "Abort this commit"
+
+**If option 1 (use suggestion):**
 ```bash
-git checkout -b "$branch_name"
+git checkout -b "feature/{suggested-name}"
 ```
 
 ```
-✓ Created and switched to: $branch_name
+✓ Created and switched to: feature/workflow-ux-improvements
 
 Proceeding with commit on new branch...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-If **no**:
+**If option 2 (custom name):**
 ```
-✗ Aborting
+Enter branch name (e.g., feature/my-work, bugfix/issue-123): _
+```
 
-Will not commit to protected branch: $current_branch
+Validate format:
+- Warns if doesn't start with type prefix (feature/, bugfix/, etc.)
+- Suggests correction if malformed
+- Creates branch and continues
+
+**If option 3 (git-workflow-manager):**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Switching to git-workflow-manager
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ This provides full workflow:
+ • Create feature branch
+ • Commit changes
+ • Push to remote
+ • Create pull request
+
+ Note: You said "push code" triggers git-workflow-manager.
+ Just say that to invoke the full workflow.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Exit `/commit`, prompt user to say "push code".
+
+**If option 4 (cancel):**
+```
+✗ Commit cancelled
 
 To commit this work:
-  git checkout -b feature/your-branch-name
-  /commit
+  1. Create branch: git checkout -b feature/your-branch-name
+  2. Run: /commit
+
+Or use git-workflow-manager for full push workflow.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -252,6 +327,40 @@ Area of codebase: `auth`, `api`, `ui`, `db`, `config`, etc.
 
 ## Examples
 
+### Branch Safety in Action
+
+**Scenario: Currently on main, want to commit**
+
+```
+User on main: /commit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ⚠️  BRANCH SAFETY CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ You're on: main (protected branch)
+
+ Based on your work:
+ • Context: "Add user authentication"
+ • Modified: app/models/user.rb, app/controllers/auth_controller.rb
+
+ Suggested branch: feature/user-authentication
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+→ Options:
+  1. Create feature/user-authentication (Recommended)
+  2. Specify different branch name
+  3. Use git-workflow-manager instead
+  4. Cancel
+
+User selects: 1
+
+✓ Created and switched to: feature/user-authentication
+
+Proceeding with commit...
+```
+
 ### Simple Feature
 ```
 feat(auth): add certificate verification
@@ -283,7 +392,7 @@ Migration: Update monitoring to include auth headers.
 refactor(models): extract validation to concern
 
 Move shared validation logic to ValidatableAgent
-concern. Reduces duplication across Agent and 
+concern. Reduces duplication across Agent and
 AgentConfig models.
 ```
 
