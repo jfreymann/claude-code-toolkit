@@ -23,9 +23,66 @@ Capture session state and prepare handoff for future resumption. Updates `docs/s
 - **Before switching projects** → `/end-session`
 - **Context window getting full** → `/end-session --pause`
 
+**⚠️ Best Practice:** Run `/update-state` BEFORE `/end-session` to capture decisions and progress during your session. If you forget, `/end-session` will remind you.
+
 ---
 
 ## Execution
+
+### Step 0: State Freshness Check
+
+**CRITICAL: Before ending session, ensure CURRENT.md has been kept up to date.**
+
+Check when CURRENT.md was last updated:
+
+```bash
+# Get last modification time
+CURRENT_MOD=$(stat -f %m docs/sessions/CURRENT.md 2>/dev/null || stat -c %Y docs/sessions/CURRENT.md 2>/dev/null)
+NOW=$(date +%s)
+HOURS_SINCE_UPDATE=$(( ($NOW - $CURRENT_MOD) / 3600 ))
+```
+
+**Staleness criteria:**
+
+| Hours Since Update | Action |
+|-------------------|--------|
+| < 1 hour | Proceed normally |
+| 1-3 hours | Soft suggestion to update |
+| > 3 hours | Strong recommendation to update first |
+
+**If stale (> 1 hour), prompt user:**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ⚠️  CURRENT.md MIGHT BE STALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ CURRENT.md was last updated {HOURS_SINCE_UPDATE} hours ago.
+
+ Have you captured recent work in CURRENT.md?
+ • Key decisions made this session?
+ • What's happening now vs. {hours} ago?
+ • Open questions discovered?
+
+ Running /update-state first ensures you don't lose context.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Then ask with AskUserQuestion:**
+- Question: "Update CURRENT.md before ending session?"
+- Options:
+  1. "Yes - run /update-state first (Recommended)" (description: "Capture recent decisions and progress before ending")
+  2. "No - CURRENT.md is already up to date" (description: "Skip to session end handoff")
+  3. "I'll update it manually now" (description: "End session will wait while you update")
+
+**If option 1:** Stop and tell user to run `/update-state` first, then come back to `/end-session`
+
+**If option 2:** Proceed with session end
+
+**If option 3:** Wait for user to update CURRENT.md, then proceed
+
+**Note:** In `--pause` mode, skip this check (pauses are quick by nature).
 
 ### Step 1: Gather Session Context
 
@@ -250,9 +307,32 @@ For finished tasks/features:
 
 1. Mark current task complete in plan
 2. Update plan progress
-3. Suggest next steps (PR, archive, next task)
+3. Suggest next steps (PR, next task)
 4. Offer to run full test suite
-5. Check if entire plan is done → suggest archive
+
+**Archive suggestions:**
+
+Only suggest `/archive-session` if ALL these conditions are met:
+- Entire plan complete (not just one task)
+- Plan represents weeks of work (10+ session entries)
+- No more tasks in current work stream
+- User explicitly says "entire X system done"
+
+**Otherwise:** Just complete the session normally. CURRENT.md persists for next bootstrap.
+
+**Example outputs:**
+
+```
+# Single task complete (NO archive suggestion)
+✓ Task complete: User authentication endpoint
+→ Next: Run tests, then "push code" to create PR
+→ CURRENT.md will persist for next session
+
+# Entire major feature complete (suggest archive)
+✓ All authentication system tasks complete!
+→ This was a major milestone (12 sessions, 3 weeks)
+→ Consider /archive-session to start fresh
+```
 
 ---
 
@@ -271,6 +351,30 @@ A good handoff ensures the next session can resume without confusion:
 ---
 
 ## Integration Points
+
+### With /update-state
+
+**Best Practice Flow:**
+
+```
+During work session:
+  Work → make progress → /update-state  (capture decisions)
+  Work → more progress → /update-state  (capture more decisions)
+  Work → task done → /update-state      (final capture)
+                   ↓
+              /end-session               (creates handoff from fresh state)
+```
+
+**Why this matters:**
+- `/update-state` = Capture decisions/progress DURING work
+- `/end-session` = Create handoff AFTER work captured
+
+If CURRENT.md is stale (> 1 hour old), `/end-session` will prompt you to run `/update-state` first.
+
+**When to skip the prompt:**
+- Using `--pause` mode (quick breaks)
+- Just ran `/update-state` in last hour
+- Explicitly know CURRENT.md is up to date
 
 ### With Plans
 - Updates task status in active plan
@@ -293,10 +397,31 @@ State saved here is what `/resume` loads:
 ```
 
 ### With /archive-session
-When work truly complete:
+
+**IMPORTANT: Archive is RARE, not routine.**
+
 ```
-/end-session --complete → suggests → /archive-session
+Typical daily flow (NO archive):
+/end-session → CURRENT.md persists → /bootstrap next day
+
+Major milestone flow (rare):
+/end-session --complete
+    ↓
+Check: Major milestone? (weeks of work, 10+ sessions, entire system done)
+    ↓
+If yes: /archive-session
+If no: Done, CURRENT.md persists
 ```
+
+**Do NOT suggest archive for:**
+- Single PR merged
+- One task complete
+- Daily/weekly work
+
+**Only suggest archive for:**
+- Entire feature complete (weeks of work)
+- 10+ session entries in CURRENT.md
+- Starting completely new project area
 
 ---
 
