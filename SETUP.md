@@ -308,6 +308,8 @@ Quick updates keep state accurate:
 /update-state blocker "waiting on API access"
 ```
 
+**Note:** Post-merge cleanup automatically updates CURRENT.md! When you run "post-merge cleanup" after a PR is merged, git-workflow-manager automatically updates CURRENT.md with the latest commit, branch state, and timestamp. Manual `/update-state` after merges is no longer needed.
+
 ### 3. End Sessions with `/end-session`
 Creates a clean handoff for future you:
 - What was accomplished
