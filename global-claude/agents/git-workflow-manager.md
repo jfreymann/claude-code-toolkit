@@ -1254,6 +1254,25 @@ echo "Latest commit:"
 git log -1 --oneline --decorate
 echo ""
 echo "Ready for next feature!"
+
+# Step 12: Update session state (docs/sessions/CURRENT.md)
+# Automatically update CURRENT.md after successful post-merge cleanup
+# This keeps session state current without manual /update-state calls
+#
+# The agent should:
+# 1. Check if docs/sessions/CURRENT.md exists
+# 2. Read the file to preserve structure
+# 3. Update the following sections:
+#    - Header: <!-- Last updated: YYYY-MM-DD HH:MM -->
+#    - Quick Reference → Branch: main (or detected main branch)
+#    - Quick Reference → Last Commit: (hash + message from git log -1)
+#    - Quick Reference → Uncommitted: None (or git status count)
+#    - Quick Reference → Status: Clean state, ready for next feature
+#    - Session History: Add timestamped entry for post-merge cleanup completion
+#
+# Implementation: Use Write tool to update CURRENT.md
+# Preserve all other content (What's Happening, Key Decisions, Blockers, etc.)
+# Update only Quick Reference and add Session History entry
 ```
 
 **Safety Features:**
