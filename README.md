@@ -67,8 +67,9 @@ This is the heart of the toolkit. A simple, repeatable flow for any project:
 │  "push code"              Triggers git-workflow-manager          │
 │                           (branch, push, create PR, cleanup)     │
 │                                                                  │
-│  After PR merged: /update-state to capture completion            │
-│                   (CURRENT.md still persists!)                   │
+│  After PR merged: "post-merge cleanup"                           │
+│                   Auto-updates CURRENT.md! ✨                    │
+│                   (git-workflow-manager handles this)            │
 │                                                                  │
 │                              │                                   │
 │                              ▼                                   │
@@ -183,7 +184,7 @@ claude
 
 **Branch Safety:** `/commit` automatically creates a feature branch if you're on main/master. It uses CURRENT.md context to suggest a smart branch name (e.g., "feature/workflow-improvements"). You can accept the suggestion or provide your own.
 
-**State Management:** `/update-state` captures decisions and progress during work. `/end-session` checks if CURRENT.md is stale (> 1 hour old) and prompts you to update first. This keeps context rich for next `/bootstrap`.
+**State Management:** `/update-state` captures decisions and progress during work. **Post-merge cleanup automatically updates CURRENT.md** with latest commit and branch state. `/end-session` checks if CURRENT.md is stale (> 1 hour old) and prompts you to update first. This keeps context rich for next `/bootstrap`.
 
 ### Quality & Review
 

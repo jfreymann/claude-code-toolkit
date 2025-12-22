@@ -397,15 +397,17 @@ Weeks later: 10+ PRs merged, entire feature done
 **Ready to push:**
 1. "push code" - triggers git-workflow-manager
 2. PR created
-3. `/update-state` - note PR created
+3. `/update-state` - note PR created (optional)
 4. `/end-session` - save state
 5. **CURRENT.md persists**
 
 **After PR merged:**
-1. `/update-state` - note PR merged, what's next
-2. `/end-session` - save state
+1. "post-merge cleanup" - git-workflow-manager auto-updates CURRENT.md ✨
+2. `/end-session` - save state (optional)
 3. **CURRENT.md persists**
 4. Continue working on next task
+
+**Note:** Post-merge cleanup now automatically updates CURRENT.md with latest commit, branch state, and timestamp. Manual `/update-state` is no longer required after merges!
 
 **After MAJOR milestone (10+ sessions, weeks of work):**
 1. `/archive-session` - archives CURRENT.md
@@ -486,8 +488,8 @@ Only use `/archive-session` when **ALL** these are true:
 - "Entire API redesign shipped to production"
 
 **Example of when NOT to archive:**
-- "Login feature PR merged" ← just use /update-state
-- "Fixed the auth bug" ← just use /update-state
+- "Login feature PR merged" ← post-merge cleanup auto-updates CURRENT.md
+- "Fixed the auth bug" ← post-merge cleanup auto-updates CURRENT.md
 - "Completed task 3 of 10" ← just use /end-session
 
 When you do archive:
