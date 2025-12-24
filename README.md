@@ -11,6 +11,42 @@ This toolkit provides:
 - **Clear workflow** - Always know what to do next
 - **Quality gates** - Consistent quality without ceremony overhead
 - **Expert agents** - Specialized help when you need it
+- **Critical thinking** - Constructive challenge over blind agreement
+
+---
+
+## Critical Thinking Protocol
+
+**Built-in adversarial collaboration for better solutions.**
+
+The toolkit includes a Critical Thinking Protocol (CTP) embedded in both global and project-level context. This means Claude actively challenges architectural decisions, security assumptions, complexity, and "obvious" solutions.
+
+### What This Means
+
+- **No rubber-stamping** - "That's great!" is replaced with "What about X alternative?"
+- **Productive disagreement** - Either side can be wrong; debate leads to better solutions
+- **Proportional challenge** - Big decisions get scrutiny, trivial choices don't
+- **Show your work** - Claims backed by evidence, not opinions
+
+### Examples
+
+❌ **Without CTP:**
+> "That's a great approach! Let's implement it."
+
+✅ **With CTP:**
+> "That works, but have you considered using Redis here? What's wrong with in-memory caching for this scale?"
+
+> "This adds three dependencies. What problem is complex enough to justify that overhead?"
+
+### The Meta-Rule
+
+**If you're thinking "should I challenge this?" - challenge it.**
+
+The cost of a 60-second debate is trivial compared to the cost of a wrong architectural decision.
+
+**Location in context:**
+- `~/.claude/CLAUDE.md` - Global (your working style)
+- `.claude/CLAUDE.md` - Project-level (reinforced for every project)
 
 ---
 
@@ -321,15 +357,18 @@ Customize sections marked with 🔧:
 
 ### Who I Am
 - **Name**: [Your Name]
-- **Role**: [Your Role]  
+- **Role**: [Your Role]
 - **Focus Areas**: [Your domains]
 
 ### How I Work
 - **Philosophy**: [Your approach]
 
-### Collaboration Style
-- Colleague (default) | Assistant | Mentor
+### Critical Thinking Protocol
+Built-in adversarial collaboration (global default).
+Customize challenge criteria if needed.
 ```
+
+The Critical Thinking Protocol is included by default in both global and project templates. It establishes constructive challenge as the baseline collaboration mode.
 
 ### Adding Agents
 

@@ -38,6 +38,35 @@ Find the 🔧 markers and fill in:
 
 **This is YOUR file** - it travels with you across all projects.
 
+### 1.3 Understanding the Critical Thinking Protocol
+
+The toolkit includes a **Critical Thinking Protocol (CTP)** in both global and project-level context. This changes how Claude collaborates with you.
+
+**What it does:**
+- Claude actively challenges architectural decisions, security assumptions, and complexity
+- Productive disagreement replaces blind agreement
+- Either side can be wrong - the goal is the best solution, not consensus
+
+**Examples you'll see:**
+
+❌ **Before CTP:**
+> "That's a great approach! Let's implement it."
+
+✅ **With CTP:**
+> "That works, but have you considered using in-memory caching instead of Redis for this scale? What's the read/write pattern?"
+
+**How to work with it:**
+- Push back when you disagree - Claude will explain reasoning or concede
+- Say "let's prototype both" when there's no clear winner
+- Appreciate the challenge - it catches issues before production
+
+**The meta-rule:**
+If you're thinking "should I challenge this?" - challenge it. A 60-second debate beats a wrong architectural decision.
+
+**Location:**
+- `~/.claude/CLAUDE.md` - Your global working style (already included)
+- `.claude/CLAUDE.md` - Every project (automatically added by init-project.sh)
+
 ---
 
 ## Part 2: Project Setup (Per Project)

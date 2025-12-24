@@ -11,6 +11,7 @@ This is the **Claude Code Agentic Workflow Toolkit** - a framework for persisten
 - **Specialized agents** for domain-specific work (Rails, PostgreSQL, Git, etc.)
 - **Workflow commands** (slash commands) for common development tasks
 - **Extensible skills** for complex operations (creating hooks, subagents, meta-prompts)
+- **Critical Thinking Protocol** - Built-in adversarial collaboration for better solutions
 
 ## Architecture
 
@@ -68,6 +69,30 @@ Result:
 ```
 
 ## Key Components
+
+### Critical Thinking Protocol (CTP)
+
+**Location:**
+- `global-claude/CLAUDE.md` - Template (gets copied to `~/.claude/CLAUDE.md`)
+- `project-templates/project-CLAUDE.md` - Project template (gets copied to `.claude/CLAUDE.md`)
+
+**Purpose:**
+Establishes adversarial collaboration as the default mode. Claude actively challenges:
+- Architecture decisions
+- Security assumptions
+- Performance claims
+- Complexity justifications
+- "Obvious" solutions
+- Scope decisions
+
+**Design principle:**
+Embedded at both global and project levels for reinforcement. The protocol is so fundamental to good engineering that it should be visible in every context layer.
+
+**When working on CTP:**
+- Changes to global template affect new installations only
+- Changes to project template affect new projects via `init-project.sh`
+- Existing users must manually update their `~/.claude/CLAUDE.md`
+- Document changes in README.md and WALKTHROUGH.md
 
 ### Agents (global-claude/agents/)
 
